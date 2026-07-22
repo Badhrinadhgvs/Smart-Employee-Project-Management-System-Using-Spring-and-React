@@ -1,5 +1,23 @@
 HELP.md
 target/
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+application-local.properties
+
+# Runtime and local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# JavaScript dependencies if frontend tooling is run from this module
+node_modules/
+
+# Operating-system files
+.DS_Store
+Thumbs.db
+
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
