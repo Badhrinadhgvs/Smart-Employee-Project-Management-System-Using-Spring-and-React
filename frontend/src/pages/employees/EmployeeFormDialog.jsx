@@ -76,6 +76,18 @@ export default function EmployeeFormDialog({ open, employee, onClose, onSaved })
       notify('A password is required for new employees.', 'error');
       return;
     }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      notify('Enter a valid email address.', 'error');
+      return;
+    }
+    if (form.phone && !/^\d{10}$/.test(form.phone.trim())) {
+      notify('Phone number must contain exactly 10 digits.', 'error');
+      return;
+    }
+    if (form.salary !== '' && (!Number.isFinite(Number(form.salary)) || Number(form.salary) < 0)) {
+      notify('Salary must be a valid non-negative number.', 'error');
+      return;
+    }
     setSaving(true);
     try {
       const payload = {

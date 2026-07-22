@@ -63,6 +63,10 @@ export default function ProjectFormDialog({ open, project, onClose, onSaved }) {
       notify('Project name is required.', 'error');
       return;
     }
+    if (form.startDate && form.endDate && form.endDate < form.startDate) {
+      notify('End date cannot be before the start date.', 'error');
+      return;
+    }
     setSaving(true);
     try {
       const payload = { ...form, startDate: form.startDate || null, endDate: form.endDate || null };

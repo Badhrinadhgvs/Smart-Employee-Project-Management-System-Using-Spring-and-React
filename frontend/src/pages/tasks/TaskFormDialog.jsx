@@ -67,6 +67,10 @@ export default function TaskFormDialog({ open, task, onClose, onSaved }) {
       notify('Task title is required.', 'error');
       return;
     }
+    if (form.deadline && !/^\d{4}-\d{2}-\d{2}$/.test(form.deadline)) {
+      notify('Enter a valid deadline date.', 'error');
+      return;
+    }
     setSaving(true);
     try {
       const payload = {
