@@ -18,7 +18,7 @@ function titleFor(pathname) {
   return TITLES[base] || 'Smart Emp';
 }
 
-export default function AppLayout() {
+export default function AppLayout({ onToggleTheme, mode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
 
@@ -26,7 +26,7 @@ export default function AppLayout() {
     <Box sx={{ display: 'flex', minHeight: '100vh' }}>
       <Sidebar mobileOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
       <Box sx={{ flexGrow: 1, width: { md: `calc(100% - ${DRAWER_WIDTH}px)` } }}>
-        <Topbar onMenuClick={() => setMobileOpen(true)} title={titleFor(location.pathname)} />
+        <Topbar onMenuClick={() => setMobileOpen(true)} title={titleFor(location.pathname)} onToggleTheme={onToggleTheme} mode={mode} />
         <Toolbar />
         <Box component="main" sx={{ p: { xs: 2, sm: 3, md: 4 }, maxWidth: 1400, mx: 'auto' }}>
           <Outlet />

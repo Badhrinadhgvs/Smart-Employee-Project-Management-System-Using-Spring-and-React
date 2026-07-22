@@ -25,6 +25,8 @@ import { listAllTasks } from '../../api/taskApi';
 import { useNotify } from '../../context/NotificationContext';
 import { formatDate, daysUntil } from '../../utils/format';
 import { tokens } from '../../theme';
+import { jsPDF } from 'jspdf';
+import { autoTable } from 'jspdf-autotable';
 
 // Minimal CSV export — no extra dependency needed for this bonus feature.
 function downloadCsv(filename, headers, rows) {
@@ -37,6 +39,33 @@ function downloadCsv(filename, headers, rows) {
   link.download = filename;
   link.click();
   URL.revokeObjectURL(url);
+}
+
+function drawPdfBars(doc, items, startY) {
+  const max = Math.max(...items.map((item) => item.value), 1);
+  const colors = [[55, 48, 163], [15, 118, 110], [225, 29, 72], [217, 119, 6]];
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(9); doc.setTextColor(30, 41, 59); doc.text('Visual summary', 16, startY);
+  items.forEach((item, index) => {
+    const y = startY + 8 + index * 8;
+    doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(100, 116, 139); doc.text(String(item.label).slice(0, 25), 16, y + 3);
+    doc.setFillColor(235, 238, 245); doc.roundedRect(62, y, 105, 4, 2, 2, 'F');
+    doc.setFillColor(...colors[index % colors.length]); doc.roundedRect(62, y, Math.max(2, (105 * item.value) / max), 4, 2, 2, 'F');
+    doc.setTextColor(30, 41, 59); doc.text(String(item.value), 172, y + 3);
+  });
+}
+
+function downloadPdf(filename, title, headers, rows, summary, visuals = []) {
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  const navy = [27, 42, 74];
+  doc.setFillColor(...navy); doc.rect(0, 0, 210, 34, 'F');
+  doc.setTextColor(255, 255, 255); doc.setFont('helvetica', 'bold'); doc.setFontSize(20); doc.text('Smart Emp', 16, 15);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.text('PROJECT & TASK OPS  /  MANAGEMENT REPORT', 16, 24);
+  doc.setTextColor(...navy); doc.setFont('helvetica', 'bold'); doc.setFontSize(16); doc.text(title, 16, 49);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(9); doc.setTextColor(91, 100, 114); doc.text(`Generated ${new Date().toLocaleDateString()}${summary ? `  •  ${summary}` : ''}`, 16, 57);
+  const visualHeight = visuals.length ? 8 + visuals.length * 8 + 8 : 0;
+  if (visuals.length) drawPdfBars(doc, visuals, 68);
+  autoTable(doc, { startY: 66 + visualHeight, head: [headers], body: rows, theme: 'grid', styles: { font: 'helvetica', fontSize: 8, cellPadding: 3, textColor: [22, 35, 63], lineColor: [227, 232, 239], lineWidth: 0.2 }, headStyles: { fillColor: navy, textColor: 255, fontStyle: 'bold' }, alternateRowStyles: { fillColor: [247, 249, 252] }, margin: { left: 16, right: 16 }, didDrawPage: () => { doc.setFontSize(8); doc.setTextColor(120); doc.text(`Smart Emp  •  Page ${doc.getNumberOfPages()}`, 16, 287); } });
+  doc.save(filename);
 }
 
 export default function ReportsPage() {
@@ -116,15 +145,16 @@ export default function ReportsPage() {
             <Button
               size="small"
               startIcon={<FileDownloadOutlinedIcon />}
-              onClick={() =>
-                downloadCsv(
-                  'employee_task_report.csv',
+              onClick={() => {
+                downloadPdf(
+                  'employee_task_report.pdf', 'Employee task report',
                   ['Employee', 'Department', 'Total', 'Completed', 'In progress', 'Pending'],
                   employeeReport.map((e) => [`${e.firstName} ${e.lastName}`, e.department, e.total, e.completed, e.inProgress, e.pending])
-                )
-              }
+                  , '', [{ label: 'Completed', value: employeeReport.reduce((sum, e) => sum + e.completed, 0) }, { label: 'In progress', value: employeeReport.reduce((sum, e) => sum + e.inProgress, 0) }, { label: 'Pending', value: employeeReport.reduce((sum, e) => sum + e.pending, 0) }]
+                );
+              }}
             >
-              Export CSV
+              Download PDF
             </Button>
           </Stack>
           {employeeReport.length === 0 ? (
@@ -166,15 +196,16 @@ export default function ReportsPage() {
             <Button
               size="small"
               startIcon={<FileDownloadOutlinedIcon />}
-              onClick={() =>
-                downloadCsv(
-                  'project_progress_report.csv',
+              onClick={() => {
+                downloadPdf(
+                  'project_progress_report.pdf', 'Project progress report',
                   ['Project', 'Status', 'Priority', 'Total tasks', 'Completed', '% complete'],
                   projectReport.map((p) => [p.name, p.status, p.priority, p.totalTasks, p.completed, `${p.pct}%`])
-                )
-              }
+                  , '', projectReport.slice().sort((a, b) => b.pct - a.pct).slice(0, 5).map((p) => ({ label: p.name, value: p.pct }))
+                );
+              }}
             >
-              Export CSV
+              Download PDF
             </Button>
           </Stack>
           {projectReport.length === 0 ? (
@@ -231,9 +262,9 @@ export default function ReportsPage() {
             <Button
               size="small"
               startIcon={<FileDownloadOutlinedIcon />}
-              onClick={() =>
-                downloadCsv(
-                  'pending_task_report.csv',
+              onClick={() => {
+                downloadPdf(
+                  'pending_task_report.pdf', 'Pending task report',
                   ['Task', 'Project', 'Assigned to', 'Priority', 'Status', 'Deadline'],
                   pendingReport.map((t) => [
                     t.title,
@@ -243,10 +274,11 @@ export default function ReportsPage() {
                     t.status,
                     t.deadline || '',
                   ])
-                )
-              }
+                  , '', [{ label: 'High priority', value: pendingReport.filter((t) => t.priority === 'HIGH').length }, { label: 'Medium priority', value: pendingReport.filter((t) => t.priority === 'MEDIUM').length }, { label: 'Low priority', value: pendingReport.filter((t) => t.priority === 'LOW').length }]
+                );
+              }}
             >
-              Export CSV
+              Download PDF
             </Button>
           </Stack>
           {pendingReport.length === 0 ? (

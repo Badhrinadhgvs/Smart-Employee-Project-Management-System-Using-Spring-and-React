@@ -17,7 +17,7 @@ function PublicOnlyRoute({ children }) {
   return user ? <Navigate to="/" replace /> : children;
 }
 
-export default function App() {
+export default function App({ onToggleTheme, mode }) {
   return (
     <AuthProvider>
       <NotificationProvider>
@@ -27,7 +27,7 @@ export default function App() {
             <Route path="/register" element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
 
             <Route element={<ProtectedRoute />}>
-              <Route element={<AppLayout />}>
+                <Route element={<AppLayout onToggleTheme={onToggleTheme} mode={mode} />}>
                 <Route path="/" element={<DashboardIndex />} />
                 <Route path="/employees" element={<EmployeesPage />} />
                 <Route path="/tasks" element={<TasksPage />} />

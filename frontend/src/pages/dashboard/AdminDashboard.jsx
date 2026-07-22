@@ -16,7 +16,7 @@ import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, AreaChart, Area } from 'recharts';
 import PageHeader from '../../components/common/PageHeader';
 import StatusPill from '../../components/common/StatusPill';
 import { listAllEmployees } from '../../api/employeeApi';
@@ -113,6 +113,8 @@ export default function AdminDashboard() {
     .filter((t) => t.status !== 'COMPLETED' && t.deadline)
     .sort((a, b) => new Date(a.deadline) - new Date(b.deadline))
     .slice(0, 5);
+  const workloadData = useMemo(() => employees.map((e) => ({ name: `${e.firstName || ''} ${(e.lastName || '')[0] || ''}`.trim(), assigned: tasks.filter((t) => t.assignedEmployee?.id === e.id).length, completed: tasks.filter((t) => t.assignedEmployee?.id === e.id && t.status === 'COMPLETED').length })).filter((e) => e.assigned).slice(0, 8), [employees, tasks]);
+  const deadlineTrend = useMemo(() => Array.from({ length: 7 }, (_, i) => { const d = new Date(); d.setDate(d.getDate() + i); return { day: i === 0 ? 'Today' : d.toLocaleDateString(undefined, { weekday: 'short' }), tasks: tasks.filter((t) => t.status !== 'COMPLETED' && t.deadline && new Date(t.deadline).toDateString() === d.toDateString()).length }; }), [tasks]);
 
   return (
     <Box>
@@ -230,6 +232,20 @@ export default function AdminDashboard() {
                 ))}
               </List>
             )}
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={7}>
+          <Paper variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+            <Typography variant="subtitle1" fontWeight={700} sx={{ mb: 0.5 }}>Team workload</Typography>
+            <Typography variant="caption" color="text.secondary">Assigned versus completed tasks by team member</Typography>
+            <Box sx={{ height: 245, mt: 1 }}><ResponsiveContainer width="100%" height="100%"><BarChart data={workloadData} barGap={4}><CartesianGrid vertical={false} stroke="currentColor" opacity={0.1} /><XAxis dataKey="name" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} /><YAxis allowDecimals={false} axisLine={false} tickLine={false} /><Tooltip /><Legend /><Bar dataKey="assigned" name="Assigned" fill={tokens.navy} radius={[5, 5, 0, 0]} /><Bar dataKey="completed" name="Completed" fill={tokens.teal} radius={[5, 5, 0, 0]} /></BarChart></ResponsiveContainer></Box>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} md={5}>
+          <Paper variant="outlined" sx={{ p: 3, borderRadius: 3, height: '100%' }}>
+            <Typography variant="subtitle1" fontWeight={700}>Upcoming workload</Typography>
+            <Typography variant="caption" color="text.secondary">Open deadlines over the next 7 days</Typography>
+            <Box sx={{ height: 245, mt: 1 }}><ResponsiveContainer width="100%" height="100%"><AreaChart data={deadlineTrend}><defs><linearGradient id="deadlineFill" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={tokens.coral} stopOpacity={0.35} /><stop offset="100%" stopColor={tokens.coral} stopOpacity={0} /></linearGradient></defs><CartesianGrid vertical={false} stroke="currentColor" opacity={0.1} /><XAxis dataKey="day" tick={{ fontSize: 11 }} axisLine={false} tickLine={false} /><YAxis allowDecimals={false} axisLine={false} tickLine={false} /><Tooltip /><Area type="monotone" dataKey="tasks" name="Open tasks" stroke={tokens.coral} fill="url(#deadlineFill)" strokeWidth={3} /></AreaChart></ResponsiveContainer></Box>
           </Paper>
         </Grid>
       </Grid>

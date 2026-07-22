@@ -5,36 +5,36 @@ import { createTheme } from '@mui/material/styles';
 // reserved strictly for HIGH priority signals, and a calm cool-gray canvas
 // (not the generic warm-cream default) since this is a data-dense ops tool.
 const tokens = {
-  ink: '#141B2E',
-  navy: '#1B2A4A',
-  teal: '#0E8F82',
-  tealDark: '#0B6F65',
-  coral: '#E8703A',
-  amber: '#D9A441',
-  success: '#2FA36B',
-  danger: '#D64545',
-  canvas: '#F3F6F9',
+  ink: '#111827',
+  navy: '#3730A3',
+  teal: '#0F766E',
+  tealDark: '#115E59',
+  coral: '#E11D48',
+  amber: '#D97706',
+  success: '#15803D',
+  danger: '#BE123C',
+  canvas: '#F5F7FB',
   surface: '#FFFFFF',
   line: '#E3E8EF',
-  textPrimary: '#16233F',
-  textSecondary: '#5B6472',
+  textPrimary: '#1E293B',
+  textSecondary: '#64748B',
 };
 
 export { tokens };
 
-const theme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: { main: tokens.navy, light: '#2C3E63', dark: tokens.ink, contrastText: '#fff' },
-    secondary: { main: tokens.teal, dark: tokens.tealDark, contrastText: '#fff' },
-    error: { main: tokens.danger },
-    warning: { main: tokens.amber },
-    success: { main: tokens.success },
-    info: { main: tokens.coral },
-    background: { default: tokens.canvas, paper: tokens.surface },
-    text: { primary: tokens.textPrimary, secondary: tokens.textSecondary },
-    divider: tokens.line,
-  },
+export function getTheme(mode = 'light') {
+  const dark = mode === 'dark';
+  const palette = {
+    mode,
+    primary: { main: dark ? '#A5B4FC' : tokens.navy, light: '#6366F1', dark: dark ? '#E0E7FF' : tokens.ink, contrastText: dark ? '#111827' : '#fff' },
+    secondary: { main: dark ? '#5EEAD4' : tokens.teal, dark: tokens.tealDark, contrastText: dark ? '#042F2E' : '#fff' },
+    error: { main: dark ? '#FF8C82' : tokens.danger }, warning: { main: dark ? '#F0C56B' : tokens.amber }, success: { main: dark ? '#63D99A' : tokens.success }, info: { main: tokens.coral },
+    background: { default: dark ? '#0F172A' : tokens.canvas, paper: dark ? '#172033' : tokens.surface },
+    text: { primary: dark ? '#F8FAFC' : tokens.textPrimary, secondary: dark ? '#A8B3C7' : tokens.textSecondary },
+    divider: dark ? '#29364D' : tokens.line,
+  };
+  return createTheme({
+  palette,
   shape: { borderRadius: 10 },
   typography: {
     fontFamily: '"Inter", "Segoe UI", sans-serif',
@@ -51,7 +51,7 @@ const theme = createTheme({
   components: {
     MuiCssBaseline: {
       styleOverrides: {
-        body: { backgroundColor: tokens.canvas },
+        body: { backgroundColor: dark ? '#0F172A' : tokens.canvas },
         '::selection': { backgroundColor: tokens.teal, color: '#fff' },
       },
     },
@@ -86,8 +86,8 @@ const theme = createTheme({
           letterSpacing: '0.04em',
           textTransform: 'uppercase',
           color: tokens.textSecondary,
-          backgroundColor: '#F8FAFC',
-          borderBottom: `1px solid ${tokens.line}`,
+          backgroundColor: dark ? '#1D2B40' : '#F8FAFC',
+          borderBottom: `1px solid ${palette.divider}`,
         },
       },
     },
@@ -97,6 +97,6 @@ const theme = createTheme({
       },
     },
   },
-});
+}); }
 
-export default theme;
+export default getTheme('light');

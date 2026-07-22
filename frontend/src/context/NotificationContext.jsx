@@ -29,7 +29,8 @@ export function NotificationProvider({ children }) {
         open={state.open}
         autoHideDuration={4500}
         onClose={handleClose}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        sx={{ top: { xs: 72, sm: 80 } }}
       >
         <Alert onClose={handleClose} severity={state.severity} variant="filled" sx={{ borderRadius: 2 }}>
           {state.message}

@@ -19,15 +19,15 @@ function Mark() {
       viewBox="0 0 40 40"
       sx={{ width: 32, height: 32, flexShrink: 0 }}
     >
-      <circle cx="20" cy="20" r="17" fill="none" stroke="#2C3E63" strokeWidth="4" />
+      <circle cx="20" cy="20" r="17" fill="none" stroke="#6366F1" strokeWidth="4" />
       <path
         d="M20 3 A17 17 0 0 1 35.5 25"
         fill="none"
-        stroke="#0E8F82"
+        stroke="#14B8A6"
         strokeWidth="4"
         strokeLinecap="round"
       />
-      <circle cx="20" cy="20" r="5.5" fill="#E8703A" />
+      <circle cx="20" cy="20" r="5.5" fill="#F43F5E" />
     </Box>
   );
 }
@@ -80,8 +80,8 @@ function SidebarContent() {
                 borderRadius: 2,
                 mb: 0.5,
                 color: active ? '#fff' : 'rgba(255,255,255,0.65)',
-                bgcolor: active ? 'rgba(14,143,130,0.22)' : 'transparent',
-                borderLeft: active ? '3px solid #0E8F82' : '3px solid transparent',
+                bgcolor: active ? 'rgba(99,102,241,0.22)' : 'transparent',
+                borderLeft: active ? '3px solid #818CF8' : '3px solid transparent',
                 '&:hover': { bgcolor: 'rgba(255,255,255,0.06)' },
               }}
             >
