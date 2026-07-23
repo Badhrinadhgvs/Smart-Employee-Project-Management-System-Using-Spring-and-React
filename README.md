@@ -565,7 +565,12 @@ Interactive Swagger UI documentation is available when running the backend:
 
 ### 10.4 Reports & Analytics
 ![Reports & Analytics](docs/screenshots/reports-analytics.png)
-*Figure 4: Detailed Project/Task reports with PDF export*
+*Figure 4.1: Detailed Project/Task reports with PDF export*
+
+### Analytics
+![Analytics](docs/screenshots/analytics.png)
+*Figure 4.2: Detailed Analytics*
+
 
 ---
 
