@@ -11,17 +11,25 @@ import {
   ListItemText,
   Avatar,
   Divider,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
 } from '@mui/material';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import ReportProblemOutlinedIcon from '@mui/icons-material/ReportProblemOutlined';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend, AreaChart, Area } from 'recharts';
 import PageHeader from '../../components/common/PageHeader';
 import StatusPill from '../../components/common/StatusPill';
 import { listAllEmployees } from '../../api/employeeApi';
 import { searchProjects } from '../../api/projectApi';
 import { listAllTasks } from '../../api/taskApi';
+import { sendTestEmail } from '../../api/adminApi';
 import { useNotify } from '../../context/NotificationContext';
 import { formatDate, daysUntil, initialsOf } from '../../utils/format';
 import { tokens } from '../../theme';
@@ -67,11 +75,29 @@ const TASK_COLORS = { PENDING: '#94A3B8', IN_PROGRESS: '#0E8F82', COMPLETED: '#2
 const PROJECT_COLORS = { NOT_STARTED: '#94A3B8', IN_PROGRESS: '#0E8F82', COMPLETED: '#2FA36B', SUSPENDED: '#D64545' };
 
 export default function AdminDashboard() {
-  const { notifyError } = useNotify();
+  const { notifySuccess, notifyError } = useNotify();
   const [employees, setEmployees] = useState([]);
   const [projects, setProjects] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [emailDialogOpen, setEmailDialogOpen] = useState(false);
+  const [testEmailAddress, setTestEmailAddress] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
+
+  const handleSendTestEmail = async () => {
+    if (!testEmailAddress) return;
+    setSendingEmail(true);
+    try {
+      await sendTestEmail(testEmailAddress);
+      notifySuccess(`Test email notification queued for ${testEmailAddress}`);
+      setEmailDialogOpen(false);
+      setTestEmailAddress('');
+    } catch (err) {
+      notifyError(err, 'Failed to send test email notification.');
+    } finally {
+      setSendingEmail(false);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -118,7 +144,21 @@ export default function AdminDashboard() {
 
   return (
     <Box>
-      <PageHeader title="Admin overview" subtitle="Live snapshot across employees, projects and tasks." />
+      <PageHeader
+        title="Admin overview"
+        subtitle="Live snapshot across employees, projects and tasks."
+        action={
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<EmailOutlinedIcon />}
+            onClick={() => setEmailDialogOpen(true)}
+            sx={{ borderRadius: 2 }}
+          >
+            Test Email Alert
+          </Button>
+        }
+      />
 
       {loading && <LinearProgress color="secondary" sx={{ mb: 3, borderRadius: 1 }} />}
 
@@ -249,6 +289,38 @@ export default function AdminDashboard() {
           </Paper>
         </Grid>
       </Grid>
+
+      <Dialog open={emailDialogOpen} onClose={() => setEmailDialogOpen(false)} maxWidth="xs" fullWidth>
+        <DialogTitle sx={{ fontWeight: 700 }}>Test Email Notification</DialogTitle>
+        <DialogContent>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Enter an email address below to dispatch a test HTML email notification.
+          </Typography>
+          <TextField
+            autoFocus
+            label="Recipient Email"
+            type="email"
+            fullWidth
+            value={testEmailAddress}
+            onChange={(e) => setTestEmailAddress(e.target.value)}
+            placeholder="user@example.com"
+            size="small"
+          />
+        </DialogContent>
+        <DialogActions sx={{ px: 3, pb: 2 }}>
+          <Button onClick={() => setEmailDialogOpen(false)} color="inherit">
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            onClick={handleSendTestEmail}
+            disabled={!testEmailAddress || sendingEmail}
+            startIcon={<EmailOutlinedIcon />}
+          >
+            {sendingEmail ? 'Sending...' : 'Send Alert'}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

@@ -18,6 +18,7 @@ import java.util.List;
 public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     public List<NotificationDto.Response> getNotificationsForUser(String username) {
         User user = getUserByUsername(username);
@@ -66,6 +67,9 @@ public class NotificationService {
                 .createdAt(LocalDateTime.now())
                 .build();
         notificationRepository.save(notification);
+
+        String recipientName = (user.getFirstName() != null ? user.getFirstName() : "") + " " + (user.getLastName() != null ? user.getLastName() : "");
+        emailService.sendNotificationEmail(user.getEmail(), recipientName.trim(), title, message, type);
     }
 
     private User getUserByUsername(String username) {
