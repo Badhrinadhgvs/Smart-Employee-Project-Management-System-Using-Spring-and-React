@@ -23,8 +23,8 @@ export default function App({ onToggleTheme, mode }) {
       <NotificationProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/login" element={<PublicOnlyRoute><Login /></PublicOnlyRoute>} />
-            <Route path="/register" element={<PublicOnlyRoute><Register /></PublicOnlyRoute>} />
+            <Route path="/login" element={<PublicOnlyRoute><Login onToggleTheme={onToggleTheme} mode={mode} /></PublicOnlyRoute>} />
+            <Route path="/register" element={<PublicOnlyRoute><Register onToggleTheme={onToggleTheme} mode={mode} /></PublicOnlyRoute>} />
 
             <Route element={<ProtectedRoute />}>
                 <Route element={<AppLayout onToggleTheme={onToggleTheme} mode={mode} />}>

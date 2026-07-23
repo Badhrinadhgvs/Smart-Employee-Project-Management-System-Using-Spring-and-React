@@ -5,6 +5,7 @@ import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined'; import { downloadAuditLogs } from '../../api/adminApi';
 import { useAuth } from '../../context/AuthContext';
 
 export const DRAWER_WIDTH = 248;
@@ -97,6 +98,7 @@ function SidebarContent() {
       </List>
 
       <Box sx={{ px: 2.5, py: 2.5, borderTop: '1px solid rgba(255,255,255,0.08)' }}>
+        {isAdmin && <ListItemButton onClick={downloadAuditLogs} sx={{color:'rgba(255,255,255,0.65)',mb:1}}><ListItemIcon sx={{minWidth:36,color:'inherit'}}><DownloadOutlinedIcon fontSize="small" /></ListItemIcon><ListItemText primary="Download audit logs" primaryTypographyProps={{fontSize:'0.82rem'}} /></ListItemButton>}
         <Typography sx={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.4)' }}>
           {isAdmin ? 'Admin workspace' : 'Employee workspace'}
         </Typography>

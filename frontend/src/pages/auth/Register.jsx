@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Box, Paper, TextField, Button, Typography, Alert, Link, Grid } from '@mui/material';
+import IconButton from '@mui/material/IconButton'; import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'; import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import * as authApi from '../../api/authApi';
 
 const EMPTY = { username: '', email: '', password: '', firstName: '', lastName: '' };
 
-export default function Register() {
+export default function Register({ onToggleTheme, mode }) {
   const navigate = useNavigate();
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState('');
@@ -46,11 +47,11 @@ export default function Register() {
       }}
     >
       <Paper variant="outlined" sx={{ width: '100%', maxWidth: 480, p: { xs: 3, sm: 5 }, borderRadius: 3 }}>
-        <Typography variant="h4" sx={{ mb: 0.5 }}>
+        <Box sx={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><Typography variant="h4" sx={{ mb: 0.5 }}>
           Create your account
-        </Typography>
+        </Typography><IconButton onClick={onToggleTheme}>{mode === 'dark' ? <LightModeOutlinedIcon/> : <DarkModeOutlinedIcon/>}</IconButton></Box>
         <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
-          New accounts join as an employee. An admin can adjust roles later.
+          New accounts require administrator approval before sign in.
         </Typography>
 
         {error && <Alert severity="error" sx={{ mb: 2.5 }}>{error}</Alert>}

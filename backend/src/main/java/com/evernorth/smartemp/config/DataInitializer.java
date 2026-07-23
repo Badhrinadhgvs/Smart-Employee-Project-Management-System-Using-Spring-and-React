@@ -19,12 +19,17 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        if (userRepository.count() != 0) return;
+        if (userRepository.count() != 0) {
+            userRepository.findByUsername("admin").ifPresent(u -> { u.setApproved(true); userRepository.save(u); });
+            userRepository.findByUsername("john_doe").ifPresent(u -> { u.setApproved(true); userRepository.save(u); });
+            userRepository.findByUsername("priya_r").ifPresent(u -> { u.setApproved(true); userRepository.save(u); });
+            return;
+        }
 
         User admin = userRepository.save(User.builder().username("admin").email("admin@evernorth.com")
                 .password(passwordEncoder.encode("admin123")).firstName("System").lastName("Admin")
                 .department("Executive").designation("System Admin").salary(1800000D)
-                .roles(Set.of(Role.ADMIN, Role.EMPLOYEE)).build());
+                .approved(true).roles(Set.of(Role.ADMIN, Role.EMPLOYEE)).build());
         User john = userRepository.save(User.builder().username("john_doe").email("john.doe@evernorth.com")
                 .password(passwordEncoder.encode("john123")).firstName("John").lastName("Doe")
                 .department("Engineering").designation("Senior Developer").salary(950000D)

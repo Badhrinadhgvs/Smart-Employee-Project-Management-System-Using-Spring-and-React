@@ -33,6 +33,7 @@ import { searchEmployees, deleteEmployee } from '../../api/employeeApi';
 import { useAuth } from '../../context/AuthContext';
 import { useNotify } from '../../context/NotificationContext';
 import { formatCurrency, formatDate, initialsOf, roleLabel } from '../../utils/format';
+import { pendingUsers, approveUser } from '../../api/adminApi';
 
 const DEPARTMENTS = ['', 'Engineering', 'Executive', 'HR', 'Finance', 'Operations', 'Sales'];
 
@@ -49,6 +50,7 @@ export default function EmployeesPage() {
   const [sortField, setSortField] = useState('firstName');
   const [sortDir, setSortDir] = useState('asc');
   const [loading, setLoading] = useState(true);
+  const [pending, setPending] = useState([]);
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState(null);
@@ -78,6 +80,7 @@ export default function EmployeesPage() {
   useEffect(() => {
     load();
   }, [load]);
+  useEffect(() => { if (isAdmin) pendingUsers().then(setPending).catch(() => {}); }, [isAdmin]);
 
   // Debounce search input so we don't hit the API on every keystroke.
   const [searchInput, setSearchInput] = useState('');
@@ -139,6 +142,7 @@ export default function EmployeesPage() {
           )
         }
       />
+      {isAdmin && pending.length > 0 && <Paper variant="outlined" sx={{p:2,mb:2,borderRadius:3}}><Typography variant="subtitle1" fontWeight={700}>Pending registrations</Typography><Stack spacing={1} sx={{mt:1}}>{pending.map(u => <Stack key={u.id} direction="row" alignItems="center" justifyContent="space-between"><Typography variant="body2">{u.firstName} {u.lastName} ({u.username})</Typography><Button size="small" variant="contained" onClick={async()=>{await approveUser(u.id);setPending(pending.filter(x=>x.id!==u.id));notify('Account approved.')}}>Approve</Button></Stack>)}</Stack></Paper>}
 
       <Paper variant="outlined" sx={{ borderRadius: 3, overflow: 'hidden' }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} sx={{ p: 2.5 }}>

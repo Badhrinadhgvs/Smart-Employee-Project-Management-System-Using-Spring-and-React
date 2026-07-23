@@ -13,9 +13,11 @@ import {
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
+import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import { useAuth } from '../../context/AuthContext';
 
-export default function Login() {
+export default function Login({ onToggleTheme, mode }) {
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -112,9 +114,9 @@ export default function Login() {
           variant="outlined"
           sx={{ width: '100%', maxWidth: 420, p: { xs: 3, sm: 5 }, borderRadius: 3 }}
         >
-          <Typography variant="h4" sx={{ mb: 0.5 }}>
+          <Box sx={{display:'flex',justifyContent:'space-between',alignItems:'center'}}><Typography variant="h4" sx={{ mb: 0.5 }}>
             Welcome back
-          </Typography>
+          </Typography><IconButton onClick={onToggleTheme}>{mode === 'dark' ? <LightModeOutlinedIcon/> : <DarkModeOutlinedIcon/>}</IconButton></Box>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
             Sign in to your workspace to continue.
           </Typography>

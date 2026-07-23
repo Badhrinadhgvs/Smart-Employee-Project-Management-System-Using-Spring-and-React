@@ -1,0 +1,38 @@
+services:
+  db:
+    image: mysql:8.4
+    container_name: smart-emp-db
+    environment:
+      MYSQL_DATABASE: Employee_Management
+      MYSQL_ROOT_PASSWORD: Badhri
+    volumes:
+      - mysql-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  backend:
+    build:
+      context: ./backend
+    container_name: smart-emp-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/Employee_Management?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: smart-emp-frontend
+    depends_on:
+      - backend
+    ports:
+      - "5173:80"
+
+volumes:
+  mysql-data:
