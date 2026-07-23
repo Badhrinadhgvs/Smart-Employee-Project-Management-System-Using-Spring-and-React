@@ -18,6 +18,7 @@ import {
   Tooltip,
   TablePagination,
   LinearProgress,
+  TableSortLabel,
 } from '@mui/material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
@@ -48,6 +49,8 @@ export default function ProjectsPage() {
   const [searchInput, setSearchInput] = useState('');
   const [status, setStatus] = useState('');
   const [priority, setPriority] = useState('');
+  const [sortField, setSortField] = useState('name');
+  const [sortDir, setSortDir] = useState('asc');
   const [loading, setLoading] = useState(true);
 
   const [formOpen, setFormOpen] = useState(false);
@@ -55,10 +58,26 @@ export default function ProjectsPage() {
   const [confirmTarget, setConfirmTarget] = useState(null);
   const [deleting, setDeleting] = useState(false);
 
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'));
+    } else {
+      setSortField(field);
+      setSortDir('asc');
+    }
+  };
+
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await searchProjects({ page, size, search, status, priority });
+      const data = await searchProjects({
+        page,
+        size,
+        search,
+        status,
+        priority,
+        sort: `${sortField},${sortDir}`,
+      });
       setRows(data.content || []);
       setTotalElements(data.totalElements || 0);
     } catch (err) {
@@ -67,7 +86,7 @@ export default function ProjectsPage() {
       setLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [page, size, search, status, priority]);
+  }, [page, size, search, status, priority, sortField, sortDir]);
 
   useEffect(() => {
     load();
@@ -121,35 +140,59 @@ export default function ProjectsPage() {
       />
 
       <Paper variant="outlined" sx={{ borderRadius: 3, p: 2.5, mb: 2.5 }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
-          <TextField
-            placeholder="Search projects by name or description…"
-            size="small"
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            sx={{ flexGrow: 1 }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchOutlinedIcon fontSize="small" />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Select size="small" value={status} displayEmpty onChange={(e) => { setPage(0); setStatus(e.target.value); }} sx={{ minWidth: 170 }}>
-            <MenuItem value="">All statuses</MenuItem>
-            {STATUS_OPTIONS.filter(Boolean).map((s) => (
-              <MenuItem key={s} value={s}>{s.replace('_', ' ')}</MenuItem>
-            ))}
-          </Select>
-          <Select size="small" value={priority} displayEmpty onChange={(e) => { setPage(0); setPriority(e.target.value); }} sx={{ minWidth: 150 }}>
-            <MenuItem value="">All priorities</MenuItem>
-            {PRIORITY_OPTIONS.filter(Boolean).map((p) => (
-              <MenuItem key={p} value={p}>{p}</MenuItem>
-            ))}
-          </Select>
+        <Stack spacing={2}>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+            <TextField
+              placeholder="Search projects by name or description…"
+              size="small"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              sx={{ flexGrow: 1 }}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchOutlinedIcon fontSize="small" />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Select size="small" value={status} displayEmpty onChange={(e) => { setPage(0); setStatus(e.target.value); }} sx={{ minWidth: 170 }}>
+              <MenuItem value="">All statuses</MenuItem>
+              {STATUS_OPTIONS.filter(Boolean).map((s) => (
+                <MenuItem key={s} value={s}>{s.replace('_', ' ')}</MenuItem>
+              ))}
+            </Select>
+            <Select size="small" value={priority} displayEmpty onChange={(e) => { setPage(0); setPriority(e.target.value); }} sx={{ minWidth: 150 }}>
+              <MenuItem value="">All priorities</MenuItem>
+              {PRIORITY_OPTIONS.filter(Boolean).map((p) => (
+                <MenuItem key={p} value={p}>{p}</MenuItem>
+              ))}
+            </Select>
+          </Stack>
+
+          <Stack direction="row" spacing={2} alignItems="center" flexWrap="wrap" sx={{ pt: 1.5, borderTop: '1px solid', borderColor: 'divider' }}>
+            <Typography variant="caption" color="text.secondary" fontWeight={600}>
+              Sort by:
+            </Typography>
+            <TableSortLabel active={sortField === 'name'} direction={sortDir} onClick={() => handleSort('name')}>
+              Name
+            </TableSortLabel>
+            <TableSortLabel active={sortField === 'status'} direction={sortDir} onClick={() => handleSort('status')}>
+              Status
+            </TableSortLabel>
+            <TableSortLabel active={sortField === 'priority'} direction={sortDir} onClick={() => handleSort('priority')}>
+              Priority
+            </TableSortLabel>
+            <TableSortLabel active={sortField === 'startDate'} direction={sortDir} onClick={() => handleSort('startDate')}>
+              Start Date
+            </TableSortLabel>
+            <TableSortLabel active={sortField === 'endDate'} direction={sortDir} onClick={() => handleSort('endDate')}>
+              End Date
+            </TableSortLabel>
+          </Stack>
         </Stack>
       </Paper>
+
 
       {loading && <LinearProgress color="secondary" sx={{ mb: 2, borderRadius: 1 }} />}
 
