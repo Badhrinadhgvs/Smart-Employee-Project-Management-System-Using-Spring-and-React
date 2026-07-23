@@ -1,0 +1,552 @@
+# Smart Employee & Project Management System
+
+The **Smart Employee & Project Management System** is a full-stack enterprise web application built using **React 18** (frontend) and **Spring Boot 3.3.2** (backend) with **MySQL 8.4** database persistence. It was developed for the **EverNorth Technical Assessment (Round 2)** to demonstrate modern enterprise software engineering practices, role-based security, project/task tracking, real-time analytics, reporting, database management, and asynchronous email notifications.
+
+---
+
+## 1. Tech Stack Overview
+
+| Layer | Technology / Library | Description |
+| :--- | :--- | :--- |
+| **Frontend Framework** | React 18, Vite 5 | Single Page Application framework and build tool |
+| **Frontend UI & Styling** | Material UI (MUI v5), Emotion | Design system components, dark/light theme support |
+| **Data Visualization & Export**| Recharts, jsPDF, jsPDF-AutoTable | Analytics charts and PDF report generation |
+| **HTTP Client & Routing** | Axios, React Router v6 | API request handling with JWT interceptors & route protection |
+| **Backend Framework** | Java 17, Spring Boot 3.3.2 | Core backend framework and REST API engine |
+| **Security & Auth** | Spring Security, JJWT (0.12.6) | Stateless JWT authentication & Role-Based Access Control |
+| **Persistence & ORM** | Spring Data JPA, Hibernate | Database access layer with automated schema management |
+| **Database** | MySQL 8.4 / 8.0 | Relational database engine |
+| **Mail & Notifications** | Spring Boot Mail, `@EnableAsync` | Asynchronous HTML email alert dispatches |
+| **API Documentation** | Springdoc OpenAPI (Swagger UI v2.6.0) | Interactive API documentation |
+| **Containerization** | Docker, Docker Compose | Multi-container environment (MySQL, Spring Backend, Nginx Frontend) |
+| **Build & Package** | Maven 3.8+, npm | Dependency management and build tools |
+
+---
+
+## 2. Features Checklist
+
+### Authentication & Authorization
+- [x] **User Registration**: New employees can register with personal, department, and credential details.
+- [x] **Login & Logout**: JWT-based login with persistent token handling and clean session logout.
+- [x] **JWT Authentication**: Stateless authentication header (`Bearer <token>`) validated via custom filter.
+- [x] **Role-Based Access Control (RBAC)**: Fine-grained permissions for `ROLE_ADMIN` and `ROLE_EMPLOYEE`.
+- [x] **Admin Account Approval**: Newly registered users require explicit Admin approval before gaining full access.
+
+### Employee Management
+- [x] **Add / Update / Delete / View Employees**: Full CRUD operations managed by Admin.
+- [x] **Employee Search**: Full-text search across employee names, email addresses, and designations.
+- [x] **Pagination & Sorting**: Server-side pagination and field sorting (`firstName`, `lastName`, `department`, `salary`, `hireDate`).
+
+### Project Management
+- [x] **Create / Update / Delete Projects**: Comprehensive project lifecycle management.
+- [x] **Employee Assignment**: Many-to-Many assignment connecting multiple employees to projects.
+- [x] **Status, Priority & Deadlines**: Manage project status (`PLANNING`, `IN_PROGRESS`, `COMPLETED`, `ON_HOLD`) and priority (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
+
+### Task Management
+- [x] **Create & Assign Tasks**: Assign specific tasks to employees under active projects.
+- [x] **Task Status & Progress Tracking**: Statuses include `PENDING`, `IN_PROGRESS`, `COMPLETED`, `BLOCKED`.
+- [x] **Task Status Updates**: Employees can update task statuses (`PATCH /api/tasks/{id}/status`).
+- [x] **Remarks & Notes**: Add optional notes/remarks to tasks.
+
+### Dashboards & Analytics
+- [x] **Admin Dashboard**: Live KPI cards, task breakdown pie charts, project status bar charts, team workload charts, 7-day deadline trends, and a manual Test Email alert modal.
+- [x] **Employee Dashboard**: Workload statistics, personal assigned task list, status toggles, and upcoming deadline countdowns.
+
+### Search & Filtering
+- [x] **Search**: Instant search filtering across employees, projects, and task titles.
+- [x] **Filter by Department**: Filter employee listings by department name.
+- [x] **Filter by Status & Priority**: Filter projects and tasks by status or priority levels.
+
+### Reports & PDF Export
+- [x] **Employee-wise Task Report**: Detailed task distribution table per employee.
+- [x] **Project Progress Report**: Progress percentage and task breakdown per project.
+- [x] **Pending Task Report**: Summary of open and overdue tasks across teams.
+- [x] **PDF Export**: One-click professional PDF report generation with formatted auto-tables using `jspdf`.
+
+### Advanced Capabilities & Documentation
+- [x] **Swagger / OpenAPI Documentation**: Live interactive REST docs at `/swagger-ui.html`.
+- [x] **Postman Collections**: Ready-to-use API collection with automatic JWT token capture scripts.
+- [x] **Database Scripts**: Included production DDL schema and DML seed scripts.
+- [x] **Mermaid System Flowchart**: Built-in clean, minimalistic architecture flow diagram.
+- [x] **Docker & Docker Compose**: Full multi-container orchestration (`docker-compose.yml`).
+- [x] **Email Notifications**: Asynchronous HTML email notifications for task assignment, status updates, and account approval.
+- [x] **Audit Logs**: Administrative CSV audit log export (`/api/admin/audit-logs`).
+
+---
+
+## 3. System Flowchart & ER Diagram
+
+### 3.1 Architecture Flowchart
+![Architecture Flowchart](docs/screenshots/architecture_flowchart.png)
+*Figure 1: High-level System Architecture & Execution Flowchart.*
+
+<details>
+<summary>Click to view Mermaid Source Code</summary>
+
+```mermaid
+graph TD
+    User([User]) -->|Authenticate| Auth[JWT Login]
+    Auth --> Portal{Role Router}
+    
+    Portal -->|ROLE_ADMIN| Admin[Admin Portal]
+    Admin --> AdminOps[Manage Employees | Projects | Tasks | Reports]
+    
+    Portal -->|ROLE_EMPLOYEE| Emp[Employee Portal]
+    Emp --> EmpOps[View Assigned Tasks & Update Status]
+    
+    AdminOps & EmpOps --> DB[(MySQL Database)]
+    AdminOps -.-> Mail[Async Email Notifications]
+```
+</details>
+
+---
+
+### 3.2 Database Entity-Relationship (ER) Diagram
+![Database ER Diagram](docs/screenshots/database_er_diagram.png)
+*Figure 2: Relational Database Schema & Entity Relationships.*
+
+<details>
+<summary>Click to view Mermaid Source Code</summary>
+
+```mermaid
+erDiagram
+    USERS ||--o{ USER_ROLES : "has roles"
+    USERS ||--o{ NOTIFICATIONS : "receives"
+    USERS }|--|{ PROJECTS : "assigned to (project_employees)"
+    PROJECTS ||--o{ TASKS : "contains"
+    USERS ||--o{ TASKS : "assigned to task"
+
+    USERS {
+        bigint id PK
+        string username UK
+        string email UK
+        string department
+        string designation
+        boolean approved
+    }
+
+    PROJECTS {
+        bigint id PK
+        string name
+        string status
+        string priority
+        date start_date
+        date end_date
+    }
+
+    TASKS {
+        bigint id PK
+        string title
+        string status
+        string priority
+        date deadline
+        bigint assigned_employee_id FK
+        bigint project_id FK
+    }
+
+    NOTIFICATIONS {
+        bigint id PK
+        bigint user_id FK
+        string title
+        string message
+        boolean is_read
+        datetime created_at
+    }
+```
+</details>
+
+
+
+
+---
+
+## 4. Database Scripts & Schema
+
+The system includes pre-configured SQL scripts for creating the database schema and inserting initial seed data.
+
+- **File Location**: [database/schema_and_data.sql](database/schema_and_data.sql)
+
+### 4.1 Schema DDL (Create Tables & Indexes)
+```sql
+CREATE DATABASE IF NOT EXISTS `Employee_Management` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE `Employee_Management`;
+
+DROP TABLE IF EXISTS `user_roles`;
+DROP TABLE IF EXISTS `project_employees`;
+DROP TABLE IF EXISTS `tasks`;
+DROP TABLE IF EXISTS `notifications`;
+DROP TABLE IF EXISTS `projects`;
+DROP TABLE IF EXISTS `audit_log`;
+DROP TABLE IF EXISTS `users`;
+
+-- Users Table
+CREATE TABLE `users` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(255) NOT NULL UNIQUE,
+    `email` VARCHAR(255) NOT NULL UNIQUE,
+    `password` VARCHAR(255) NOT NULL,
+    `first_name` VARCHAR(255) DEFAULT NULL,
+    `last_name` VARCHAR(255) DEFAULT NULL,
+    `department` VARCHAR(255) DEFAULT NULL,
+    `designation` VARCHAR(255) DEFAULT NULL,
+    `salary` DOUBLE DEFAULT NULL,
+    `phone` VARCHAR(255) DEFAULT NULL,
+    `hire_date` DATE DEFAULT NULL,
+    `approved` BIT(1) NOT NULL DEFAULT b'1',
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- User Roles Table
+CREATE TABLE `user_roles` (
+    `user_id` BIGINT NOT NULL,
+    `role` VARCHAR(50) NOT NULL,
+    KEY `fk_user_roles_user` (`user_id`),
+    CONSTRAINT `fk_user_roles_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Projects Table
+CREATE TABLE `projects` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `name` VARCHAR(255) NOT NULL,
+    `description` VARCHAR(2000) DEFAULT NULL,
+    `status` VARCHAR(50) DEFAULT NULL,
+    `priority` VARCHAR(50) DEFAULT NULL,
+    `start_date` DATE DEFAULT NULL,
+    `end_date` DATE DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Project Employees (Join Table)
+CREATE TABLE `project_employees` (
+    `project_id` BIGINT NOT NULL,
+    `employee_id` BIGINT NOT NULL,
+    PRIMARY KEY (`project_id`, `employee_id`),
+    KEY `fk_project_employees_user` (`employee_id`),
+    CONSTRAINT `fk_project_employees_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
+    CONSTRAINT `fk_project_employees_user` FOREIGN KEY (`employee_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Tasks Table
+CREATE TABLE `tasks` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `title` VARCHAR(255) NOT NULL,
+    `description` VARCHAR(2000) DEFAULT NULL,
+    `status` VARCHAR(50) DEFAULT NULL,
+    `priority` VARCHAR(50) DEFAULT NULL,
+    `deadline` DATE DEFAULT NULL,
+    `remarks` VARCHAR(1000) DEFAULT NULL,
+    `assigned_employee_id` BIGINT DEFAULT NULL,
+    `project_id` BIGINT DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `fk_tasks_employee` (`assigned_employee_id`),
+    KEY `fk_tasks_project` (`project_id`),
+    CONSTRAINT `fk_tasks_employee` FOREIGN KEY (`assigned_employee_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+    CONSTRAINT `fk_tasks_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Notifications Table
+CREATE TABLE `notifications` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `user_id` BIGINT NOT NULL,
+    `title` VARCHAR(255) NOT NULL,
+    `message` VARCHAR(1000) NOT NULL,
+    `is_read` BIT(1) NOT NULL DEFAULT b'0',
+    `type` VARCHAR(50) DEFAULT NULL,
+    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `fk_notifications_user` (`user_id`),
+    CONSTRAINT `fk_notifications_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Audit Log Table
+CREATE TABLE `audit_log` (
+    `id` BIGINT NOT NULL AUTO_INCREMENT,
+    `action` VARCHAR(255) DEFAULT NULL,
+    `username` VARCHAR(255) DEFAULT NULL,
+    `details` VARCHAR(255) DEFAULT NULL,
+    `created_at` DATETIME DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+```
+
+### 4.2 Initial Seed Data DML
+```sql
+INSERT INTO `users` (`id`, `username`, `email`, `password`, `first_name`, `last_name`, `department`, `designation`, `salary`, `phone`, `hire_date`, `approved`) VALUES
+(1, 'admin', 'admin@evernorth.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVym54n0ySg6Y.6.1J0O.YKG', 'System', 'Admin', 'Executive', 'System Admin', 1800000.0, '+1000000000', '2024-01-01', b'1'),
+(2, 'john_doe', 'john.doe@evernorth.com', '$2a$10$e8w.p4eDkXg8j/2r9f3LceY8rS8zJ5O0e/5qX9y7Z.1K4.YKG', 'John', 'Doe', 'Engineering', 'Senior Developer', 950000.0, '+1000000001', '2024-02-15', b'1'),
+(3, 'priya_r', 'priya.r@evernorth.com', '$2a$10$e8w.p4eDkXg8j/2r9f3LceY8rS8zJ5O0e/5qX9y7Z.1K4.YKG', 'Priya', 'R', 'Engineering', 'QA Engineer', 820000.0, '+1000000002', '2024-03-01', b'1');
+
+INSERT INTO `user_roles` (`user_id`, `role`) VALUES
+(1, 'ADMIN'), (1, 'EMPLOYEE'),
+(2, 'EMPLOYEE'),
+(3, 'EMPLOYEE');
+
+INSERT INTO `projects` (`id`, `name`, `description`, `status`, `priority`, `start_date`, `end_date`) VALUES
+(1, 'Smart Portal Revamp', 'Comprehensive redesign and feature expansion of corporate employee portal.', 'IN_PROGRESS', 'HIGH', '2024-06-01', '2024-12-31');
+
+INSERT INTO `project_employees` (`project_id`, `employee_id`) VALUES
+(1, 2), (1, 3);
+
+INSERT INTO `tasks` (`id`, `title`, `description`, `status`, `priority`, `deadline`, `remarks`, `assigned_employee_id`, `project_id`) VALUES
+(1, 'Implement portal features', 'Build core REST APIs and React UI components.', 'IN_PROGRESS', 'HIGH', '2024-08-15', 'Backend APIs completed, UI in progress', 2, 1),
+(2, 'Test portal features', 'Execute end-to-end unit and integration test suite.', 'PENDING', 'MEDIUM', '2024-08-30', 'Awaiting feature completion', 3, 1);
+
+INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `is_read`, `type`, `created_at`) VALUES
+(1, 1, 'Welcome Admin', 'Welcome to Smart Employee Management System!', b'0', 'SYSTEM', NOW()),
+(2, 1, 'System Alert', 'New employee registration requests are pending review.', b'0', 'SYSTEM', NOW()),
+(3, 2, 'Welcome John', 'Welcome to the platform. Check out your assigned tasks.', b'0', 'SYSTEM', NOW()),
+(4, 2, 'Task Assigned', 'You have been assigned to task: Implement portal features', b'0', 'TASK', NOW()),
+(5, 3, 'Welcome Priya', 'Welcome to the team! You have 1 new task assigned.', b'0', 'SYSTEM', NOW());
+```
+
+---
+
+## 5. Postman Collections
+
+A comprehensive Postman Collection is included for importing and testing all REST API endpoints.
+
+- **Collection File**: [Smart_Employee_Management_System.postman_collection.json](file://Smart_Employee_Management_System.postman_collection.json) or [postman/Smart_Employee_Management_System.postman_collection.json](file://postman/Smart_Employee_Management_System.postman_collection.json)
+
+### 5.1 Quick Import & Execution Guide
+1. Open **Postman** $\rightarrow$ Click **Import**.
+2. Drag and drop `Smart_Employee_Management_System.postman_collection.json`.
+3. Expand **Authentication** folder $\rightarrow$ Run **1. Admin Login**.
+4. The test script in the collection automatically extracts the `token` from response JSON and sets the `{{jwtToken}}` collection variable.
+5. All subsequent requests in **Employee Management**, **Projects**, **Tasks**, **Notifications**, and **Audit Logs** will automatically attach `Authorization: Bearer {{jwtToken}}`.
+
+### 5.2 Summary of API Endpoints
+
+| Category | Endpoint | Method | Role | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **Auth** | `/api/auth/login` | `POST` | Public | Authenticates user & returns JWT token |
+| **Auth** | `/api/auth/register` | `POST` | Public | Registers new employee account |
+| **Employees** | `/api/employees` | `GET` | Admin / Employee | Paginated employee list with search & filters |
+| **Employees** | `/api/employees/list` | `GET` | Admin | Complete list of employees (for dropdowns) |
+| **Employees** | `/api/employees/{id}` | `GET` | Admin | Get single employee details by ID |
+| **Admin** | `/api/admin/employees/{id}/approve` | `PATCH` | Admin | Approve pending employee registration |
+| **Admin** | `/api/admin/employees` | `POST` | Admin | Create new employee |
+| **Admin** | `/api/admin/employees/{id}` | `PUT` | Admin | Update existing employee profile |
+| **Admin** | `/api/admin/employees/{id}` | `DELETE` | Admin | Delete employee record |
+| **Admin** | `/api/admin/audit-logs` | `GET` | Admin | Export system audit logs as CSV file |
+| **Admin** | `/api/admin/test-email` | `POST` | Admin | Trigger manual test email alert |
+| **Projects** | `/api/projects` | `GET` | Admin / Employee | List all projects |
+| **Projects** | `/api/projects/{id}` | `GET` | Admin / Employee | Get project details with task breakdown |
+| **Projects** | `/api/projects` | `POST` | Admin | Create new project with team assignments |
+| **Projects** | `/api/projects/{id}` | `PUT` | Admin | Update project information & status |
+| **Projects** | `/api/projects/{id}` | `DELETE` | Admin | Delete project |
+| **Tasks** | `/api/tasks` | `GET` | Admin / Employee | List tasks (filtered by project/user) |
+| **Tasks** | `/api/tasks/my-tasks` | `GET` | Employee | View assigned tasks for logged-in employee |
+| **Tasks** | `/api/tasks` | `POST` | Admin | Create task under project & assign to user |
+| **Tasks** | `/api/tasks/{id}` | `PUT` | Admin | Update task details |
+| **Tasks** | `/api/tasks/{id}/status` | `PATCH` | Employee | Update task progress status & remarks |
+| **Tasks** | `/api/tasks/{id}` | `DELETE` | Admin | Delete task |
+| **Notifications**| `/api/notifications` | `GET` | User | Get user notifications |
+| **Notifications**| `/api/notifications/{id}/read` | `PATCH` | User | Mark notification as read |
+
+---
+
+## 6. Project Structure
+
+```
+Smart-Employee-Project-Management-System/
+├── backend/
+│   ├── src/main/java/com/evernorth/smartemp/
+│   │   ├── config/
+│   │   │   ├── DataInitializer.java
+│   │   │   └── SecurityConfig.java
+│   │   ├── controller/
+│   │   │   ├── AdminEmployeeController.java
+│   │   │   ├── AuditLogController.java
+│   │   │   ├── AuthController.java
+│   │   │   ├── EmployeeController.java
+│   │   │   ├── NotificationController.java
+│   │   │   ├── ProjectController.java
+│   │   │   ├── TaskController.java
+│   │   │   └── TestEmailController.java
+│   │   ├── dto/
+│   │   │   ├── AuthDtos.java
+│   │   │   ├── EmployeeDto.java
+│   │   │   ├── NotificationDto.java
+│   │   │   ├── ProjectDto.java
+│   │   │   └── TaskDto.java
+│   │   ├── entity/
+│   │   │   ├── AuditLog.java
+│   │   │   ├── Notification.java
+│   │   │   ├── Project.java
+│   │   │   ├── Task.java
+│   │   │   └── User.java
+│   │   ├── enums/
+│   │   │   ├── Priority.java
+│   │   │   ├── ProjectStatus.java
+│   │   │   ├── Role.java
+│   │   │   └── TaskStatus.java
+│   │   ├── exception/
+│   │   │   ├── BadRequestException.java
+│   │   │   ├── GlobalExceptionHandler.java
+│   │   │   └── ResourceNotFoundException.java
+│   │   ├── repository/
+│   │   │   ├── AuditLogRepository.java
+│   │   │   ├── NotificationRepository.java
+│   │   │   ├── ProjectRepository.java
+│   │   │   ├── TaskRepository.java
+│   │   │   └── UserRepository.java
+│   │   ├── security/
+│   │   │   ├── CustomUserDetailsService.java
+│   │   │   ├── JwtAuthFilter.java
+│   │   │   └── JwtUtil.java
+│   │   ├── service/
+│   │   │   ├── AuthService.java
+│   │   │   ├── EmailService.java
+│   │   │   ├── EmployeeService.java
+│   │   │   ├── NotificationService.java
+│   │   │   ├── ProjectService.java
+│   │   │   └── TaskService.java
+│   │   └── SmartEmpMgmtApplication.java
+│   ├── src/main/resources/
+│   │   ├── application.properties
+│   │   └── logback-spring.xml
+│   ├── src/test/java/com/evernorth/smartemp/service/
+│   │   └── EmployeeServiceTest.java
+│   ├── Dockerfile
+│   └── pom.xml
+├── frontend/
+│   ├── src/
+│   │   ├── api/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── pages/
+│   │   ├── routes/
+│   │   ├── App.jsx
+│   │   ├── main.jsx
+│   │   └── theme.js
+│   ├── Dockerfile
+│   ├── nginx.conf
+│   └── package.json
+├── database/
+│   └── schema_and_data.sql
+├── docs/
+│   └── screenshots/
+├── postman/
+│   └── Smart_Employee_Management_System.postman_collection.json
+├── docker-compose.yml
+├── Smart_Employee_Management_System.postman_collection.json
+└── README.md
+```
+
+---
+
+## 7. Prerequisites & Setup Instructions
+
+### Option A: Docker Compose (Quickest Method)
+
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/Badhrinadhgvs/Smart-Employee-Project-Management-System-Using-Spring-and-React.git
+   cd Smart-Employee-Project-Management-System-Using-Spring-and-React
+   ```
+
+2. **Launch Containers**:
+   ```bash
+   docker-compose up --build
+   ```
+
+3. **Access Services**:
+   - Frontend Portal: `http://localhost:5173`
+   - Backend REST API: `http://localhost:8080`
+   - Swagger Documentation: `http://localhost:8080/swagger-ui.html`
+
+---
+
+### Option B: Local Manual Setup
+
+#### Step 1: Database Setup
+Ensure MySQL 8.0/8.4 is running locally. You can execute [database/schema_and_data.sql](file://database/schema_and_data.sql) or let Spring Boot Hibernate auto-create tables:
+```properties
+# backend/src/main/resources/application.properties
+spring.datasource.url=jdbc:mysql://localhost:3306/Employee_Management?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
+spring.datasource.username=root
+spring.datasource.password=Badhri
+spring.jpa.hibernate.ddl-auto=update
+```
+
+#### Step 2: Start Spring Boot Backend
+```bash
+cd backend
+mvnw clean compile
+mvnw spring-boot:run
+```
+
+#### Step 3: Start React Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+---
+
+## 8. Demo / Sandbox Credentials
+
+Default users automatically created on startup via `DataInitializer`:
+
+| Role | Username | Password | Email | Description |
+| :--- | :--- | :--- | :--- | :--- |
+| **System Admin** | `admin` | `admin123` | `admin@evernorth.com` | Full Administrative Access (Dashboard, User Approvals, Projects, Tasks, PDF Reports, Audit Logs) |
+| **Senior Developer** | `john_doe` | `john123` | `john.doe@evernorth.com` | Employee Access (Dashboard, My Tasks, Task Status Update) |
+| **QA Engineer** | `priya_r` | `priya123` | `priya.r@evernorth.com` | Employee Access (Dashboard, My Tasks, Task Status Update) |
+
+---
+
+## 9. Interactive API Documentation (Swagger UI)
+
+Interactive Swagger UI documentation is available when running the backend:
+- **Swagger Interface**: `http://localhost:8080/swagger-ui.html`
+- **OpenAPI JSON Spec**: `http://localhost:8080/v3/api-docs`
+
+---
+
+## 10. Application Screenshots
+
+> *Upload your screenshot images to `docs/screenshots/` and update the markdown links below.*
+
+### 10.1 Authentication & Login Interface
+![Login Page](docs/screenshots/login-page.png)
+*Figure 1: JWT Authentication & Registration Interface*
+
+---
+
+### 10.2 System Admin Dashboard
+![Admin Dashboard](docs/screenshots/admin-dashboard.png)
+*Figure 2: Admin Dashboard with live KPIs, analytics charts, and test email alert action*
+
+---
+
+### 10.3 Employee Dashboard & Task Tracking
+![Employee Dashboard](docs/screenshots/employee-dashboard.png)
+*Figure 3: Employee Workload Dashboard and task progress management*
+
+---
+
+### 10.4 Reports & Analytics
+![Reports & Analytics](docs/screenshots/reports-analytics.png)
+*Figure 4: Detailed Project/Task reports with PDF export*
+
+---
+
+### 10.5 Sample PDF Report
+![Sample PDF Report](docs/screenshots/pdf-report-sample.png)
+*Figure 5: Auto-generated PDF report output*
+
+---
+
+### 10.6 Email Notification Sample
+![Email Notification Sample](docs/screenshots/email-notification.png)
+*Figure 6: Automated email notification sent on task assignment/status update*
+
+---
+
+## 11. Author / Submission Info
+
+- **Repository**: [GitHub Repository](https://github.com/Badhrinadhgvs/Smart-Employee-Project-Management-System-Using-Spring-and-React)
+- **Submission Context**: Built for **EverNorth Technical Assessment (Round 2)**.
+- **Date**: July 2026.

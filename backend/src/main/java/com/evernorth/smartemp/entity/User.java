@@ -36,4 +36,9 @@ public class User {
     @ManyToMany(mappedBy = "employees")
     @Builder.Default
     private Set<Project> projects = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private Set<Notification> notifications = new HashSet<>();
 }
+
