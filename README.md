@@ -469,14 +469,51 @@ spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:your_mysql_password}
 spring.jpa.hibernate.ddl-auto=update
 ```
 
-#### Step 2: Start Spring Boot Backend
+#### Step 2: Configure Email Notifications (`application.properties`)
+Configure the Spring Mail properties and email dispatch settings in `backend/src/main/resources/application.properties` (or set environment variables):
+
+```properties
+# Mail & Email Notification Configuration
+spring.mail.host=${SPRING_MAIL_HOST:smtp.gmail.com}
+spring.mail.port=${SPRING_MAIL_PORT:587}
+spring.mail.username=${SPRING_MAIL_USERNAME:your_email@gmail.com}
+spring.mail.password=${SPRING_MAIL_PASSWORD:your_app_password}
+
+# SMTP Connection & Security Settings
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+spring.mail.properties.mail.smtp.connectiontimeout=5000
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.writetimeout=5000
+
+# Custom Application Email Dispatch Settings
+app.mail.enabled=${APP_MAIL_ENABLED:true}
+app.mail.from=${APP_MAIL_FROM:your_email@gmail.com}
+```
+
+##### Email Configuration Properties Reference:
+
+| Property | Environment Variable | Default Value | Description |
+| :--- | :--- | :--- | :--- |
+| `spring.mail.host` | `SPRING_MAIL_HOST` | `smtp.gmail.com` | Host server for outgoing SMTP emails |
+| `spring.mail.port` | `SPRING_MAIL_PORT` | `587` | Server port (`587` for STARTTLS / `465` for SSL) |
+| `spring.mail.username` | `SPRING_MAIL_USERNAME` | `badhrinadh.g.v.s@gmail.com` | Email address/username used for SMTP authentication |
+| `spring.mail.password` | `SPRING_MAIL_PASSWORD` | *(App Password)* | SMTP account password or 16-digit Google App Password |
+| `app.mail.enabled` | `APP_MAIL_ENABLED` | `true` | Toggle flag (`true`/`false`) to enable or disable email notifications |
+| `app.mail.from` | `APP_MAIL_FROM` | `badhrinadh.g.v.s@gmail.com` | Address displayed in the `From:` header of outgoing emails |
+
+> [!TIP]
+> If using Gmail SMTP, generate an **App Password** from your Google Account settings (Security > 2-Step Verification > App Passwords) and use it as `spring.mail.password`.
+
+#### Step 3: Start Spring Boot Backend
 ```bash
 cd backend
 mvnw clean compile
 mvnw spring-boot:run
 ```
 
-#### Step 3: Start React Frontend
+#### Step 4: Start React Frontend
 ```bash
 cd frontend
 npm install
