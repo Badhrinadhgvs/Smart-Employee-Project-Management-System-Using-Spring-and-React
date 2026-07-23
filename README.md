@@ -1,6 +1,6 @@
 # Smart Employee & Project Management System
 
-The **Smart Employee & Project Management System** is a full-stack enterprise web application built using **React 18** (frontend) and **Spring Boot 3.3.2** (backend) with **MySQL 8.4** database persistence. It was developed for the **EverNorth Technical Assessment (Round 2)** to demonstrate modern enterprise software engineering practices, role-based security, project/task tracking, real-time analytics, reporting, database management, and asynchronous email notifications.
+The **Smart Employee & Project Management System** is a full-stack enterprise web application built using **React 18** (frontend) and **Spring Boot 3.3.2** (backend) with **MySQL 8.4** database persistence. It was developed by **Gundlapalli Venkata Sai Badhrinadh** to demonstrate  modern enterprise software engineering practices, role-based security, project/task tracking, real-time analytics, reporting, database management, and asynchronous email notifications.
 
 ---
 
@@ -305,7 +305,7 @@ INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `is_read`, `ty
 
 A comprehensive Postman Collection is included for importing and testing all REST API endpoints.
 
-- **Collection File**: [Smart_Employee_Management_System.postman_collection.json](file://Smart_Employee_Management_System.postman_collection.json) or [postman/Smart_Employee_Management_System.postman_collection.json](file://postman/Smart_Employee_Management_System.postman_collection.json)
+- **Collection File**: [Smart_Employee_Management_System.postman_collection.json](Smart_Employee_Management_System.postman_collection.json) or [postman/Smart_Employee_Management_System.postman_collection.json](postman/Smart_Employee_Management_System.postman_collection.json)
 
 ### 5.1 Quick Import & Execution Guide
 1. Open **Postman** $\rightarrow$ Click **Import**.
@@ -465,7 +465,7 @@ Ensure MySQL 8.0/8.4 is running locally. You can execute [database/schema_and_da
 # backend/src/main/resources/application.properties
 spring.datasource.url=jdbc:mysql://localhost:3306/Employee_Management?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
 spring.datasource.username=root
-spring.datasource.password=Badhri
+spring.datasource.password=${SPRING_DATASOURCE_PASSWORD:your_mysql_password}
 spring.jpa.hibernate.ddl-auto=update
 ```
 
@@ -507,7 +507,6 @@ Interactive Swagger UI documentation is available when running the backend:
 
 ## 10. Application Screenshots
 
-> *Upload your screenshot images to `docs/screenshots/` and update the markdown links below.*
 
 ### 10.1 Authentication & Login Interface
 ![Login Page](docs/screenshots/login-page.png)
@@ -549,4 +548,5 @@ Interactive Swagger UI documentation is available when running the backend:
 
 - **Repository**: [GitHub Repository](https://github.com/Badhrinadhgvs/Smart-Employee-Project-Management-System-Using-Spring-and-React)
 - **Submission Context**: Built for **EverNorth Technical Assessment (Round 2)**.
+- **Created By**: Gundlapalli Venkata Sai Badhrinadh
 - **Date**: July 2026.
