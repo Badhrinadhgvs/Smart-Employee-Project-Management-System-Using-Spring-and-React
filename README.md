@@ -23,50 +23,99 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 
 ---
 
-## 2. Application Screenshots
+## 2. Application Screenshots & Feature Walkthrough
 
-### 2.1 Authentication & User Access
+This section presents visual highlights and detailed feature walkthroughs of the core operational portals, user roles, security controls, reporting modules, and data exports.
+
+---
+
+### 2.1 Authentication, Registration & Access Security
+
+The application enforces stateless **JWT Authentication**, role-based authorization gates (`ROLE_ADMIN` & `ROLE_EMPLOYEE`), and client-side **Regex Pattern Validation**. Newly registered employees are held in an **Admin Approval Queue** before gaining full system access.
+
+- **Theme Support**: Real-time Light/Dark mode toggling with persistent user preference.
+- **Client-Side Regex Validation**: Instant feedback on Username, Email, Name, and Password formats.
+- **Security Protocols**: Bcrypt password hashing and stateless JWT header token dispatches (`Bearer <token>`).
+
 ![Login Portal](docs/screenshots/login-portal.png)
-*Figure 2.1: JWT Authentication & User Login Portal*
+*Figure 2.1: JWT Authentication & User Login Portal with theme toggling and demo credentials sandbox.*
 
 ![Sign Up Portal](docs/screenshots/signup-portal.png)
-*Figure 2.2: Account Registration Portal*
+*Figure 2.2: Employee Registration Interface featuring real-time client-side regex input validation.*
 
 ---
 
-### 2.2 System Admin Portal & Management Interfaces
+### 2.2 System Admin Command Center (`ROLE_ADMIN`)
+
+Administrators possess full operational oversight across the entire application ecosystem, enabling employee lifecycle management, project tracking, task allocation, real-time analytics, and operational reports export.
+
+#### 2.2.1 Admin Dashboard & Live Analytics
+The central hub presents real-time KPI counter cards, interactive data visualizations (Task Breakdown Pie Charts, Project Status Bar Charts, Team Workload Bar Charts, 7-Day Deadline Trends), and a manual **Test Email Alert** action modal.
+
 ![Admin Dashboard](docs/screenshots/admin-dashboard.png)
-*Figure 2.3: System Admin Dashboard with KPI Metrics, Analytics Charts, & Test Email Action*
+*Figure 2.3: System Admin Dashboard featuring live KPI counters, analytics charts, and test email dispatch action.*
+
+#### 2.2.2 Employee Management & Approval Queue
+Full CRUD management for team members. Supports server-side pagination, multi-field sorting (`firstName`, `lastName`, `department`, `salary`, `hireDate`), search filtering, and one-click account approvals.
 
 ![Admin Employees View](docs/screenshots/adminview-employees.png)
-*Figure 2.4: Employee Management Interface with Pagination, Sorting, Search, & Approvals*
+*Figure 2.4: Employee Management table showing search filters, server pagination, role chips, and approval actions.*
+
+#### 2.2.3 Project Lifecycle Management
+Track high-level corporate initiatives. Includes Many-to-Many employee team assignments, status/priority indicators, start/end dates, and a **Dynamic Task Progress Bar** computed automatically from linked tasks.
 
 ![Admin Projects View](docs/screenshots/adminview-projects.png)
-*Figure 2.5: Project Lifecycle Management with Dynamic Task Progress & Team Assignment*
+*Figure 2.5: Project Management interface displaying card grids, assigned employee avatars, and dynamic task completion progress.*
+
+#### 2.2.4 Task Tracking & Assignment
+Manage individual work items across projects. Supports assignment to specific team members, priority badges, deadline dates, notes/remarks, and quick status modifications (`PENDING` → `IN_PROGRESS` → `COMPLETED`).
 
 ![Admin Tasks View](docs/screenshots/adminview-tasks.png)
-*Figure 2.6: Task Tracking, Status Updates, & Filtering Interface*
+*Figure 2.6: Comprehensive Task Management view with instant search, priority filtering, and status selectors.*
+
+#### 2.2.5 Reports & Dual Format Export (CSV / PDF)
+Aggregated operational reporting across three specialized tabs (*Employee-wise Tasks*, *Project Progress*, and *Pending Tasks*). Every tab includes a dual format **Export Menu** to generate downloadable **CSV** data sheets or formatted **PDF** documents with visual summary bars.
 
 ![Admin Reports View](docs/screenshots/adminview-reports.png)
-*Figure 2.7: Aggregated Operational Reports with Dual CSV & PDF Export Options*
+*Figure 2.7: Aggregated Operational Reports module featuring tabs and one-click CSV and PDF export options.*
+
+#### 2.2.6 User Profile Management & Work Stats
+Personal user profile interface displaying account credentials, department, designation, hire date, personal task completion stats, and an interactive **Edit Profile** modal with password update and regex input validation.
 
 ![Admin Profile View](docs/screenshots/adminview-profile.png)
-*Figure 2.8: Personal Profile Management & Employment Details Dashboard*
+*Figure 2.8: Personal Account Profile interface with work snapshot stats and profile edit dialog.*
 
 ---
 
-### 2.3 Employee Workspace
+### 2.3 Employee Workspace (`ROLE_EMPLOYEE`)
+
+A focused workspace tailored for individual team members. Employees can view their assigned workload, track upcoming deadlines, update task statuses, add progress remarks, and export personal work summaries.
+
+- **Completion Rate Ring**: Dynamic SVG progress ring showing overall task completion percentage.
+- **Deadline Countdowns**: Color-coded deadline indicators highlighting upcoming and overdue tasks.
+- **Task Status Toggles**: Quick inline status dropdowns to move tasks from `PENDING` to `IN_PROGRESS` or `COMPLETED`.
+- **"Download My Work" Menu**: One-click **CSV** and **PDF** export options for personal task records.
+
 ![Employee Workload Dashboard](docs/screenshots/employee-overallview.png)
-*Figure 2.9: Employee Workload Dashboard, Completion Progress Ring, Task List, & Download Action*
+*Figure 2.9: Employee Workload Dashboard showing completion percentage ring, deadline countdowns, and CSV/PDF export button.*
 
 ---
 
-### 2.4 Data Export & Email Notifications
+### 2.4 Data Export & Automated Email Notifications
+
+The application features enterprise-grade report generation and asynchronous notification delivery to ensure team alignment.
+
+#### 2.4.1 Formatted PDF & CSV Report Output
+Generated PDF reports feature a clean corporate navy header banner, metadata, visual summary bars, auto-table formatting, and page numbering. CSV exports provide raw formatted data ready for Excel/spreadsheet processing.
+
 ![Sample PDF Report](docs/screenshots/pdf-report-sample.png)
-*Figure 2.10: Auto-Generated Formatted PDF Report Output*
+*Figure 2.10: Auto-generated PDF report featuring branded headers, visual summary charts, and auto-tables.*
+
+#### 2.4.2 Asynchronous HTML Email Notifications
+Built on Spring Mail and `@EnableAsync`, the system dispatches styled HTML emails upon key system events (Task Assignment, Status Update, Account Approval, and Manual Alerts) without blocking UI execution.
 
 ![Email Notification Sample](docs/screenshots/email-notification.png)
-*Figure 2.11: Automated Asynchronous HTML Email Alert Dispatch*
+*Figure 2.11: Sample HTML email alert dispatched asynchronously upon task assignment or status update.*
 
 ---
 
