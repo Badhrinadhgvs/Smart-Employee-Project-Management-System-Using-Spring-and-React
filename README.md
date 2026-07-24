@@ -1,6 +1,6 @@
 # Smart Employee & Project Management System
 
-The **Smart Employee & Project Management System** is a full-stack enterprise web application built using **React 18** (frontend) and **Spring Boot 3.3.2** (backend) with **MySQL 8.4** database persistence. It was developed by **Gundlapalli Venkata Sai Badhrinadh** to demonstrate  modern enterprise software engineering practices, role-based security, project/task tracking, real-time analytics, reporting, database management, and asynchronous email notifications.
+The **Smart Employee & Project Management System** is a full-stack enterprise web application built using **React 18** (frontend) and **Spring Boot 3.3.2** (backend) with **MySQL 8.4** database persistence. It was developed by **Gundlapalli Venkata Sai Badhrinadh** to demonstrate modern enterprise software engineering practices, role-based security, project/task tracking, real-time analytics, reporting, user profile management, database management, and asynchronous email notifications.
 
 ---
 
@@ -32,6 +32,11 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 - [x] **Role-Based Access Control (RBAC)**: Fine-grained permissions for `ROLE_ADMIN` and `ROLE_EMPLOYEE`.
 - [x] **Admin Account Approval**: Newly registered users require explicit Admin approval before gaining full access.
 
+### User Profile Management
+- [x] **Personal Profile Dashboard**: View account details, department, designation, and hire date.
+- [x] **Profile Editing**: Edit personal details (First Name, Last Name, Phone, Department) and update password directly from the user profile modal.
+- [x] **Personal Work Stats**: Real-time snapshot of assigned tasks, completed tasks, completion percentage, and active projects.
+
 ### Employee Management
 - [x] **Add / Update / Delete / View Employees**: Full CRUD operations managed by Admin.
 - [x] **Employee Search**: Full-text search across employee names, email addresses, and designations.
@@ -40,11 +45,12 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 ### Project Management
 - [x] **Create / Update / Delete Projects**: Comprehensive project lifecycle management.
 - [x] **Employee Assignment**: Many-to-Many assignment connecting multiple employees to projects.
-- [x] **Status, Priority & Deadlines**: Manage project status (`PLANNING`, `IN_PROGRESS`, `COMPLETED`, `ON_HOLD`) and priority (`LOW`, `MEDIUM`, `HIGH`, `CRITICAL`).
+- [x] **Dynamic Task Completion Progress Bar**: Interactive linear progress bar on project cards calculated in real-time based on completed tasks.
+- [x] **Status, Priority & Deadlines**: Manage project status (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`, `SUSPENDED`) and priority (`LOW`, `MEDIUM`, `HIGH`).
 
 ### Task Management
 - [x] **Create & Assign Tasks**: Assign specific tasks to employees under active projects.
-- [x] **Task Status & Progress Tracking**: Statuses include `PENDING`, `IN_PROGRESS`, `COMPLETED`, `BLOCKED`.
+- [x] **Task Status & Progress Tracking**: Statuses include `PENDING`, `IN_PROGRESS`, `COMPLETED`.
 - [x] **Task Status Updates**: Employees can update task statuses (`PATCH /api/tasks/{id}/status`).
 - [x] **Remarks & Notes**: Add optional notes/remarks to tasks.
 
@@ -87,14 +93,16 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 graph TD
     User([User]) -->|Authenticate| Auth[JWT Login]
     Auth --> Portal{Role Router}
-    
+
     Portal -->|ROLE_ADMIN| Admin[Admin Portal]
-    Admin --> AdminOps[Manage Employees | Projects | Tasks | Reports]
-    
+    Admin --> AdminOps["Manage Employees<br/>Projects<br/>Tasks<br/>Reports"]
+
     Portal -->|ROLE_EMPLOYEE| Emp[Employee Portal]
-    Emp --> EmpOps[View Assigned Tasks & Update Status]
-    
-    AdminOps & EmpOps --> DB[(MySQL Database)]
+    Emp --> EmpOps["View Assigned Tasks<br/>Update Status"]
+
+    AdminOps --> DB[(MySQL Database)]
+    EmpOps --> DB
+
     AdminOps -.-> Mail[Async Email Notifications]
 ```
 </details>
@@ -155,9 +163,6 @@ erDiagram
 ```
 </details>
 
-
-
-
 ---
 
 ## 4. Database Scripts & Schema
@@ -166,110 +171,7 @@ The system includes pre-configured SQL scripts for creating the database schema 
 
 - **File Location**: [database/schema_and_data.sql](database/schema_and_data.sql)
 
-### 4.1 Schema DDL (Create Tables & Indexes)
-```sql
-CREATE DATABASE IF NOT EXISTS `Employee_Management` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `Employee_Management`;
-
-DROP TABLE IF EXISTS `user_roles`;
-DROP TABLE IF EXISTS `project_employees`;
-DROP TABLE IF EXISTS `tasks`;
-DROP TABLE IF EXISTS `notifications`;
-DROP TABLE IF EXISTS `projects`;
-DROP TABLE IF EXISTS `audit_log`;
-DROP TABLE IF EXISTS `users`;
-
--- Users Table
-CREATE TABLE `users` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `username` VARCHAR(255) NOT NULL UNIQUE,
-    `email` VARCHAR(255) NOT NULL UNIQUE,
-    `password` VARCHAR(255) NOT NULL,
-    `first_name` VARCHAR(255) DEFAULT NULL,
-    `last_name` VARCHAR(255) DEFAULT NULL,
-    `department` VARCHAR(255) DEFAULT NULL,
-    `designation` VARCHAR(255) DEFAULT NULL,
-    `salary` DOUBLE DEFAULT NULL,
-    `phone` VARCHAR(255) DEFAULT NULL,
-    `hire_date` DATE DEFAULT NULL,
-    `approved` BIT(1) NOT NULL DEFAULT b'1',
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- User Roles Table
-CREATE TABLE `user_roles` (
-    `user_id` BIGINT NOT NULL,
-    `role` VARCHAR(50) NOT NULL,
-    KEY `fk_user_roles_user` (`user_id`),
-    CONSTRAINT `fk_user_roles_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Projects Table
-CREATE TABLE `projects` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `name` VARCHAR(255) NOT NULL,
-    `description` VARCHAR(2000) DEFAULT NULL,
-    `status` VARCHAR(50) DEFAULT NULL,
-    `priority` VARCHAR(50) DEFAULT NULL,
-    `start_date` DATE DEFAULT NULL,
-    `end_date` DATE DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Project Employees (Join Table)
-CREATE TABLE `project_employees` (
-    `project_id` BIGINT NOT NULL,
-    `employee_id` BIGINT NOT NULL,
-    PRIMARY KEY (`project_id`, `employee_id`),
-    KEY `fk_project_employees_user` (`employee_id`),
-    CONSTRAINT `fk_project_employees_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE,
-    CONSTRAINT `fk_project_employees_user` FOREIGN KEY (`employee_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Tasks Table
-CREATE TABLE `tasks` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `title` VARCHAR(255) NOT NULL,
-    `description` VARCHAR(2000) DEFAULT NULL,
-    `status` VARCHAR(50) DEFAULT NULL,
-    `priority` VARCHAR(50) DEFAULT NULL,
-    `deadline` DATE DEFAULT NULL,
-    `remarks` VARCHAR(1000) DEFAULT NULL,
-    `assigned_employee_id` BIGINT DEFAULT NULL,
-    `project_id` BIGINT DEFAULT NULL,
-    PRIMARY KEY (`id`),
-    KEY `fk_tasks_employee` (`assigned_employee_id`),
-    KEY `fk_tasks_project` (`project_id`),
-    CONSTRAINT `fk_tasks_employee` FOREIGN KEY (`assigned_employee_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
-    CONSTRAINT `fk_tasks_project` FOREIGN KEY (`project_id`) REFERENCES `projects` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Notifications Table
-CREATE TABLE `notifications` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `user_id` BIGINT NOT NULL,
-    `title` VARCHAR(255) NOT NULL,
-    `message` VARCHAR(1000) NOT NULL,
-    `is_read` BIT(1) NOT NULL DEFAULT b'0',
-    `type` VARCHAR(50) DEFAULT NULL,
-    `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (`id`),
-    KEY `fk_notifications_user` (`user_id`),
-    CONSTRAINT `fk_notifications_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
--- Audit Log Table
-CREATE TABLE `audit_log` (
-    `id` BIGINT NOT NULL AUTO_INCREMENT,
-    `action` VARCHAR(255) DEFAULT NULL,
-    `username` VARCHAR(255) DEFAULT NULL,
-    `details` VARCHAR(255) DEFAULT NULL,
-    `created_at` DATETIME DEFAULT NULL,
-    PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-```
-
-### 4.2 Initial Seed Data DML
+### 4.1 Initial Seed Data DML
 ```sql
 INSERT INTO `users` (`id`, `username`, `email`, `password`, `first_name`, `last_name`, `department`, `designation`, `salary`, `phone`, `hire_date`, `approved`) VALUES
 (1, 'admin', 'admin@evernorth.com', '$2a$10$8.UnVuG9HHgffUDAlk8qfOuVGkqRzgVym54n0ySg6Y.6.1J0O.YKG', 'System', 'Admin', 'Executive', 'System Admin', 1800000.0, '+1000000000', '2024-01-01', b'1'),
@@ -305,7 +207,7 @@ INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `is_read`, `ty
 
 A comprehensive Postman Collection is included for importing and testing all REST API endpoints.
 
-- **Collection File**: [Smart_Employee_Management_System.postman_collection.json](Smart_Employee_Management_System.postman_collection.json) or [postman/Smart_Employee_Management_System.postman_collection.json](postman/Smart_Employee_Management_System.postman_collection.json)
+- **Collection File**: [postman/Smart_Employee_Management_System.postman_collection.json](postman/Smart_Employee_Management_System.postman_collection.json)
 
 ### 5.1 Quick Import & Execution Guide
 1. Open **Postman** $\rightarrow$ Click **Import**.
@@ -320,9 +222,10 @@ A comprehensive Postman Collection is included for importing and testing all RES
 | :--- | :--- | :--- | :--- | :--- |
 | **Auth** | `/api/auth/login` | `POST` | Public | Authenticates user & returns JWT token |
 | **Auth** | `/api/auth/register` | `POST` | Public | Registers new employee account |
+| **Profile** | `/api/employees/me` | `GET` | Admin / Employee | View logged-in user profile & work stats |
+| **Profile** | `/api/employees/me` | `PUT` | Admin / Employee | Update logged-in user profile & password |
 | **Employees** | `/api/employees` | `GET` | Admin / Employee | Paginated employee list with search & filters |
 | **Employees** | `/api/employees/list` | `GET` | Admin | Complete list of employees (for dropdowns) |
-| **Employees** | `/api/employees/{id}` | `GET` | Admin | Get single employee details by ID |
 | **Admin** | `/api/admin/employees/{id}/approve` | `PATCH` | Admin | Approve pending employee registration |
 | **Admin** | `/api/admin/employees` | `POST` | Admin | Create new employee |
 | **Admin** | `/api/admin/employees/{id}` | `PUT` | Admin | Update existing employee profile |
@@ -429,7 +332,6 @@ Smart-Employee-Project-Management-System/
 ├── postman/
 │   └── Smart_Employee_Management_System.postman_collection.json
 ├── docker-compose.yml
-├── Smart_Employee_Management_System.postman_collection.json
 └── README.md
 ```
 
@@ -449,6 +351,7 @@ Smart-Employee-Project-Management-System/
    ```bash
    docker-compose up --build
    ```
+   *(Make sure Docker / Docker Desktop is running in the background)*
 
 3. **Access Services**:
    - Frontend Portal: `http://localhost:5173`
@@ -460,7 +363,7 @@ Smart-Employee-Project-Management-System/
 ### Option B: Local Manual Setup
 
 #### Step 1: Database Setup
-Ensure MySQL 8.0/8.4 is running locally. You can execute [database/schema_and_data.sql](file://database/schema_and_data.sql) or let Spring Boot Hibernate auto-create tables:
+Ensure MySQL 8.0/8.4 is running locally. You can execute [database/schema_and_data.sql](database/schema_and_data.sql) or let Spring Boot Hibernate auto-create tables:
 ```properties
 # backend/src/main/resources/application.properties
 spring.datasource.url=jdbc:mysql://localhost:3306/Employee_Management?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=UTC
@@ -510,7 +413,8 @@ app.mail.from=${APP_MAIL_FROM:your_email@gmail.com}
 ```bash
 cd backend
 mvnw clean compile
-mvnw spring-boot:run
+mvn clean install
+.\mvnw.cmd spring-boot:run
 ```
 
 #### Step 4: Start React Frontend
@@ -590,5 +494,5 @@ Interactive Swagger UI documentation is available when running the backend:
 
 - **Repository**: [GitHub Repository](https://github.com/Badhrinadhgvs/Smart-Employee-Project-Management-System-Using-Spring-and-React)
 - **Submission Context**: Built for **EverNorth Technical Assessment (Round 2)**.
-- **Created By**: Gundlapalli Venkata Sai Badhrinadh
+- **Built By**: Gundlapalli Venkata Sai Badhrinadh
 - **Date**: July 2026.
