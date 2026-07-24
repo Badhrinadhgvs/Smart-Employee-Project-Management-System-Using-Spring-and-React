@@ -19,6 +19,18 @@ public class EmployeeController {
         "firstName", "lastName", "department", "designation", "salary", "hireDate"
     );
 
+    @GetMapping("/me")
+    public ResponseEntity<EmployeeDto.ProfileResponse> getMyProfile(org.springframework.security.core.Authentication auth) {
+        return ResponseEntity.ok(s.getMyProfile(auth.getName()));
+    }
+
+    @PutMapping("/me")
+    public ResponseEntity<EmployeeDto.ProfileResponse> updateMyProfile(
+            org.springframework.security.core.Authentication auth,
+            @RequestBody EmployeeDto.ProfileUpdateRequest request) {
+        return ResponseEntity.ok(s.updateMyProfile(auth.getName(), request));
+    }
+
     @GetMapping("/list")
     public ResponseEntity<List<EmployeeDto.Response>> list() {
         return ResponseEntity.ok(s.listAll());

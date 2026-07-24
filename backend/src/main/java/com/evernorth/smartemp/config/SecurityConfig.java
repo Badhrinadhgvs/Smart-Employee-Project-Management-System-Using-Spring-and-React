@@ -33,8 +33,9 @@ public class SecurityConfig {
     @Bean SecurityFilterChain securityFilterChain(HttpSecurity http, AuthenticationProvider provider, JwtAuthFilter jwtFilter) throws Exception {
         http.csrf(csrf -> csrf.disable()).cors(cors -> {}).sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(provider).authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/api/auth/**", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .requestMatchers("/api/employees/me").hasAnyRole("ADMIN", "EMPLOYEE")
                 .requestMatchers(HttpMethod.GET, "/api/employees/**").hasAnyRole("ADMIN", "EMPLOYEE")
                 .requestMatchers("/api/projects/**").hasRole("ADMIN")
                 .requestMatchers(HttpMethod.GET, "/api/tasks/employee/**").hasAnyRole("ADMIN", "EMPLOYEE")

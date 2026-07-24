@@ -10,6 +10,7 @@ import EmployeesPage from './pages/employees/EmployeesPage';
 import ProjectsPage from './pages/projects/ProjectsPage';
 import TasksPage from './pages/tasks/TasksPage';
 import ReportsPage from './pages/reports/ReportsPage';
+import ProfilePage from './pages/profile/ProfilePage';
 
 function PublicOnlyRoute({ children }) {
   const { user, initializing } = useAuth();
@@ -31,6 +32,7 @@ export default function App({ onToggleTheme, mode }) {
                 <Route path="/" element={<DashboardIndex />} />
                 <Route path="/employees" element={<EmployeesPage />} />
                 <Route path="/tasks" element={<TasksPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
 
                 <Route element={<ProtectedRoute adminOnly />}>
                   <Route path="/projects" element={<ProjectsPage />} />

@@ -6,32 +6,11 @@ import FolderOpenOutlinedIcon from '@mui/icons-material/FolderOpenOutlined';
 import ChecklistOutlinedIcon from '@mui/icons-material/ChecklistOutlined';
 import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
 import DownloadOutlinedIcon from '@mui/icons-material/DownloadOutlined'; import { downloadAuditLogs } from '../../api/adminApi';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
+import Logo from '../common/Logo';
 import { useAuth } from '../../context/AuthContext';
 
 export const DRAWER_WIDTH = 248;
-
-// The signature mark: an interlocked ring that reads as both a progress
-// indicator and an "S" — echoes the live completion rings used on the
-// dashboards, so the brand mark is literally built from the product's data.
-function Mark() {
-  return (
-    <Box
-      component="svg"
-      viewBox="0 0 40 40"
-      sx={{ width: 32, height: 32, flexShrink: 0 }}
-    >
-      <circle cx="20" cy="20" r="17" fill="none" stroke="#6366F1" strokeWidth="4" />
-      <path
-        d="M20 3 A17 17 0 0 1 35.5 25"
-        fill="none"
-        stroke="#14B8A6"
-        strokeWidth="4"
-        strokeLinecap="round"
-      />
-      <circle cx="20" cy="20" r="5.5" fill="#F43F5E" />
-    </Box>
-  );
-}
 
 const ADMIN_LINKS = [
   { to: '/', label: 'Dashboard', icon: SpaceDashboardOutlinedIcon, end: true },
@@ -39,12 +18,14 @@ const ADMIN_LINKS = [
   { to: '/projects', label: 'Projects', icon: FolderOpenOutlinedIcon },
   { to: '/tasks', label: 'Tasks', icon: ChecklistOutlinedIcon },
   { to: '/reports', label: 'Reports', icon: AssessmentOutlinedIcon },
+  { to: '/profile', label: 'My Profile', icon: PersonOutlineIcon },
 ];
 
 const EMPLOYEE_LINKS = [
   { to: '/', label: 'Dashboard', icon: SpaceDashboardOutlinedIcon, end: true },
   { to: '/employees', label: 'Directory', icon: GroupsOutlinedIcon },
   { to: '/tasks', label: 'My tasks', icon: ChecklistOutlinedIcon },
+  { to: '/profile', label: 'My Profile', icon: PersonOutlineIcon },
 ];
 
 function SidebarContent() {
@@ -54,16 +35,8 @@ function SidebarContent() {
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column', color: '#fff' }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.25, px: 2.5, py: 3 }}>
-        <Mark />
-        <Box>
-          <Typography sx={{ fontFamily: 'Sora, sans-serif', fontWeight: 700, fontSize: '1rem', lineHeight: 1.1 }}>
-            Smart Emp
-          </Typography>
-          <Typography sx={{ fontSize: '0.68rem', color: 'rgba(255,255,255,0.5)', letterSpacing: '0.04em' }}>
-            PROJECT &amp; TASK OPS
-          </Typography>
-        </Box>
+      <Box sx={{ display: 'flex', alignItems: 'center', px: 2.5, py: 2.5 }}>
+        <Logo size={36} showText textColor="#ffffff" subtitleColor="rgba(255,255,255,0.5)" />
       </Box>
 
       <Divider sx={{ borderColor: 'rgba(255,255,255,0.08)' }} />

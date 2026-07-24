@@ -22,6 +22,7 @@ import {
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
+import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -336,6 +337,12 @@ export default function Topbar({ onMenuClick, title, onToggleTheme, mode }) {
             </Typography>
           </Box>
           <Divider />
+          <MenuItem onClick={() => { setAnchorEl(null); navigate('/profile'); }}>
+            <ListItemIcon>
+              <PersonOutlineIcon fontSize="small" />
+            </ListItemIcon>
+            My Profile
+          </MenuItem>
           <MenuItem onClick={handleLogout}>
             <ListItemIcon>
               <LogoutOutlinedIcon fontSize="small" />

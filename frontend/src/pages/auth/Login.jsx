@@ -15,6 +15,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined';
 import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
+import Logo from '../../components/common/Logo';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Login({ onToggleTheme, mode }) {
@@ -60,14 +61,8 @@ export default function Login({ onToggleTheme, mode }) {
           overflow: 'hidden',
         }}
       >
-        <Box
-          component="svg"
-          viewBox="0 0 40 40"
-          sx={{ width: 40, height: 40, position: 'relative', zIndex: 1 }}
-        >
-          <circle cx="20" cy="20" r="17" fill="none" stroke="#2C3E63" strokeWidth="4" />
-          <path d="M20 3 A17 17 0 0 1 35.5 25" fill="none" stroke="#0E8F82" strokeWidth="4" strokeLinecap="round" />
-          <circle cx="20" cy="20" r="5.5" fill="#E8703A" />
+        <Box sx={{ position: 'relative', zIndex: 1 }}>
+          <Logo size={44} showText={false} />
         </Box>
 
         <Box sx={{ position: 'relative', zIndex: 1 }}>

@@ -1,80 +1,73 @@
-2026-07-22T20:51:17.430+05:30 level=INFO  logger=o.h.validator.internal.util.Version thread=background-preinit message=HV000001: Hibernate Validator 8.0.1.Final
-2026-07-22T20:51:17.546+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Starting SmartEmpMgmtApplication using Java 22.0.2 with PID 16012 (D:\New folder\backend\target\classes started by GVS in D:\New folder\backend)
-2026-07-22T20:51:17.547+05:30 level=DEBUG logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Running with Spring Boot v3.3.2, Spring v6.1.11
-2026-07-22T20:51:17.549+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=No active profile set, falling back to 1 default profile: "default"
-2026-07-22T20:51:18.675+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-07-22T20:51:18.793+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Finished Spring Data repository scanning in 104 ms. Found 3 JPA repository interfaces.
-2026-07-22T20:51:19.659+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat initialized with port 8080 (http)
-2026-07-22T20:51:19.679+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Initializing ProtocolHandler ["http-nio-8080"]
-2026-07-22T20:51:19.685+05:30 level=INFO  logger=o.a.catalina.core.StandardService thread=main message=Starting service [Tomcat]
-2026-07-22T20:51:19.686+05:30 level=INFO  logger=o.a.catalina.core.StandardEngine thread=main message=Starting Servlet engine: [Apache Tomcat/10.1.26]
-2026-07-22T20:51:19.803+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=main message=Initializing Spring embedded WebApplicationContext
-2026-07-22T20:51:19.804+05:30 level=INFO  logger=o.s.b.w.s.c.ServletWebServerApplicationContext thread=main message=Root WebApplicationContext: initialization completed in 2182 ms
-2026-07-22T20:51:20.030+05:30 level=INFO  logger=o.h.jpa.internal.util.LogHelper thread=main message=HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-07-22T20:51:20.106+05:30 level=INFO  logger=org.hibernate.Version thread=main message=HHH000412: Hibernate ORM core version 6.5.2.Final
-2026-07-22T20:51:20.183+05:30 level=INFO  logger=o.h.c.i.RegionFactoryInitiator thread=main message=HHH000026: Second-level cache disabled
-2026-07-22T20:51:20.577+05:30 level=INFO  logger=o.s.o.j.p.SpringPersistenceUnitInfo thread=main message=No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-07-22T20:51:20.623+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Starting...
-2026-07-22T20:51:20.888+05:30 level=INFO  logger=com.zaxxer.hikari.pool.HikariPool thread=main message=HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@216328b2
-2026-07-22T20:51:20.891+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Start completed.
-2026-07-22T20:51:22.502+05:30 level=INFO  logger=o.h.e.t.j.p.i.JtaPlatformInitiator thread=main message=HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-07-22T20:51:22.670+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=main message=Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-07-22T20:51:23.050+05:30 level=INFO  logger=o.s.d.j.r.query.QueryEnhancerFactory thread=main message=Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-07-22T20:51:24.009+05:30 level=DEBUG logger=c.e.smartemp.security.JwtAuthFilter thread=main message=Filter 'jwtAuthFilter' configured for use
-2026-07-22T20:51:24.234+05:30 level=INFO  logger=o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer thread=main message=Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-07-22T20:51:24.235+05:30 level=WARN  logger=o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer thread=main message=Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
-2026-07-22T20:51:24.461+05:30 level=WARN  logger=o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration thread=main message=spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-07-22T20:51:25.529+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Starting ProtocolHandler ["http-nio-8080"]
-2026-07-22T20:51:25.576+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat started on port 8080 (http) with context path '/'
-2026-07-22T20:51:25.589+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Started SmartEmpMgmtApplication in 8.809 seconds (process running for 9.267)
-2026-07-22T20:51:52.478+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=http-nio-8080-exec-7 message=Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-07-22T20:51:52.479+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-7 message=Initializing Servlet 'dispatcherServlet'
-2026-07-22T20:51:52.482+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-7 message=Completed initialization in 3 ms
-2026-07-22T20:51:53.006+05:30 level=WARN  logger=o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$PlainPageSerializationWarning thread=http-nio-8080-exec-1 message=Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
-	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
-	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
-
-2026-07-22T20:52:35.385+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=SpringApplicationShutdownHook message=event=app_shutdown status=completed application=smart-emp-mgmt message=App Stopped Successfully
-2026-07-22T20:52:35.386+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=SpringApplicationShutdownHook message=Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-07-22T20:52:35.390+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown initiated...
-2026-07-22T20:52:35.403+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown completed.
-2026-07-22T21:24:58.661+05:30 level=INFO  logger=o.h.validator.internal.util.Version thread=background-preinit message=HV000001: Hibernate Validator 8.0.1.Final
-2026-07-22T21:24:58.858+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Starting SmartEmpMgmtApplication using Java 22.0.2 with PID 21096 (D:\New folder\backend\target\classes started by GVS in D:\New folder\backend)
-2026-07-22T21:24:58.859+05:30 level=DEBUG logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Running with Spring Boot v3.3.2, Spring v6.1.11
-2026-07-22T21:24:58.860+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=No active profile set, falling back to 1 default profile: "default"
-2026-07-22T21:25:00.366+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2026-07-22T21:25:00.477+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Finished Spring Data repository scanning in 98 ms. Found 3 JPA repository interfaces.
-2026-07-22T21:25:01.643+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat initialized with port 8080 (http)
-2026-07-22T21:25:01.671+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Initializing ProtocolHandler ["http-nio-8080"]
-2026-07-22T21:25:01.682+05:30 level=INFO  logger=o.a.catalina.core.StandardService thread=main message=Starting service [Tomcat]
-2026-07-22T21:25:01.683+05:30 level=INFO  logger=o.a.catalina.core.StandardEngine thread=main message=Starting Servlet engine: [Apache Tomcat/10.1.26]
-2026-07-22T21:25:01.879+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=main message=Initializing Spring embedded WebApplicationContext
-2026-07-22T21:25:01.880+05:30 level=INFO  logger=o.s.b.w.s.c.ServletWebServerApplicationContext thread=main message=Root WebApplicationContext: initialization completed in 2945 ms
-2026-07-22T21:25:02.220+05:30 level=INFO  logger=o.h.jpa.internal.util.LogHelper thread=main message=HHH000204: Processing PersistenceUnitInfo [name: default]
-2026-07-22T21:25:02.386+05:30 level=INFO  logger=org.hibernate.Version thread=main message=HHH000412: Hibernate ORM core version 6.5.2.Final
-2026-07-22T21:25:02.457+05:30 level=INFO  logger=o.h.c.i.RegionFactoryInitiator thread=main message=HHH000026: Second-level cache disabled
-2026-07-22T21:25:03.005+05:30 level=INFO  logger=o.s.o.j.p.SpringPersistenceUnitInfo thread=main message=No LoadTimeWeaver setup: ignoring JPA class transformer
-2026-07-22T21:25:03.055+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Starting...
-2026-07-22T21:25:03.462+05:30 level=INFO  logger=com.zaxxer.hikari.pool.HikariPool thread=main message=HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5315266
-2026-07-22T21:25:03.467+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Start completed.
-2026-07-22T21:25:05.402+05:30 level=INFO  logger=o.h.e.t.j.p.i.JtaPlatformInitiator thread=main message=HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2026-07-22T21:25:05.555+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=main message=Initialized JPA EntityManagerFactory for persistence unit 'default'
-2026-07-22T21:25:05.944+05:30 level=INFO  logger=o.s.d.j.r.query.QueryEnhancerFactory thread=main message=Hibernate is in classpath; If applicable, HQL parser will be used.
-2026-07-22T21:25:06.979+05:30 level=DEBUG logger=c.e.smartemp.security.JwtAuthFilter thread=main message=Filter 'jwtAuthFilter' configured for use
-2026-07-22T21:25:07.182+05:30 level=INFO  logger=o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer thread=main message=Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2026-07-22T21:25:07.183+05:30 level=WARN  logger=o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer thread=main message=Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
-2026-07-22T21:25:07.402+05:30 level=WARN  logger=o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration thread=main message=spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2026-07-22T21:25:08.683+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Starting ProtocolHandler ["http-nio-8080"]
-2026-07-22T21:25:08.738+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat started on port 8080 (http) with context path '/'
-2026-07-22T21:25:08.749+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Started SmartEmpMgmtApplication in 10.941 seconds (process running for 11.605)
-2026-07-22T21:26:40.890+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=http-nio-8080-exec-2 message=Initializing Spring DispatcherServlet 'dispatcherServlet'
-2026-07-22T21:26:40.890+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-2 message=Initializing Servlet 'dispatcherServlet'
-2026-07-22T21:26:40.894+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-2 message=Completed initialization in 4 ms
-2026-07-22T21:26:43.095+05:30 level=WARN  logger=o.s.d.w.c.SpringDataJacksonConfiguration$PageModule$PlainPageSerializationWarning thread=http-nio-8080-exec-3 message=Serializing PageImpl instances as-is is not supported, meaning that there is no guarantee about the stability of the resulting JSON structure!
-	For a stable JSON structure, please use Spring Data's PagedModel (globally via @EnableSpringDataWebSupport(pageSerializationMode = VIA_DTO))
-	or Spring HATEOAS and Spring Data's PagedResourcesAssembler as documented in https://docs.spring.io/spring-data/commons/reference/repositories/core-extensions.html#core.web.pageables.
-
-2026-07-22T21:34:53.673+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=SpringApplicationShutdownHook message=event=app_shutdown status=completed application=smart-emp-mgmt message=App Stopped Successfully
-2026-07-22T21:34:53.676+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=SpringApplicationShutdownHook message=Closing JPA EntityManagerFactory for persistence unit 'default'
-2026-07-22T21:34:53.683+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown initiated...
-2026-07-22T21:34:53.712+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown completed.
+2026-07-23T22:09:18.073+05:30 level=INFO  logger=o.h.validator.internal.util.Version thread=background-preinit message=HV000001: Hibernate Validator 8.0.1.Final
+2026-07-23T22:09:18.209+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Starting SmartEmpMgmtApplication using Java 22.0.2 with PID 10512 (D:\New folder\backend\target\classes started by GVS in D:\New folder\backend)
+2026-07-23T22:09:18.210+05:30 level=DEBUG logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Running with Spring Boot v3.3.2, Spring v6.1.11
+2026-07-23T22:09:18.211+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=No active profile set, falling back to 1 default profile: "default"
+2026-07-23T22:09:19.420+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-23T22:09:19.539+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Finished Spring Data repository scanning in 110 ms. Found 5 JPA repository interfaces.
+2026-07-23T22:09:20.518+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat initialized with port 8080 (http)
+2026-07-23T22:09:20.541+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Initializing ProtocolHandler ["http-nio-8080"]
+2026-07-23T22:09:20.547+05:30 level=INFO  logger=o.a.catalina.core.StandardService thread=main message=Starting service [Tomcat]
+2026-07-23T22:09:20.548+05:30 level=INFO  logger=o.a.catalina.core.StandardEngine thread=main message=Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-07-23T22:09:20.652+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=main message=Initializing Spring embedded WebApplicationContext
+2026-07-23T22:09:20.653+05:30 level=INFO  logger=o.s.b.w.s.c.ServletWebServerApplicationContext thread=main message=Root WebApplicationContext: initialization completed in 2381 ms
+2026-07-23T22:09:20.903+05:30 level=INFO  logger=o.h.jpa.internal.util.LogHelper thread=main message=HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-07-23T22:09:20.997+05:30 level=INFO  logger=org.hibernate.Version thread=main message=HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-07-23T22:09:21.061+05:30 level=INFO  logger=o.h.c.i.RegionFactoryInitiator thread=main message=HHH000026: Second-level cache disabled
+2026-07-23T22:09:22.097+05:30 level=INFO  logger=o.s.o.j.p.SpringPersistenceUnitInfo thread=main message=No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-23T22:09:22.180+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Starting...
+2026-07-23T22:09:23.033+05:30 level=INFO  logger=com.zaxxer.hikari.pool.HikariPool thread=main message=HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5df7a065
+2026-07-23T22:09:23.036+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Start completed.
+2026-07-23T22:09:26.951+05:30 level=INFO  logger=o.h.e.t.j.p.i.JtaPlatformInitiator thread=main message=HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-23T22:09:28.204+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=main message=Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-23T22:09:28.868+05:30 level=INFO  logger=o.s.d.j.r.query.QueryEnhancerFactory thread=main message=Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-23T22:09:30.803+05:30 level=DEBUG logger=c.e.smartemp.security.JwtAuthFilter thread=main message=Filter 'jwtAuthFilter' configured for use
+2026-07-23T22:09:31.574+05:30 level=INFO  logger=o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer thread=main message=Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-07-23T22:09:31.579+05:30 level=WARN  logger=o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer thread=main message=Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+2026-07-23T22:09:32.029+05:30 level=WARN  logger=o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration thread=main message=spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-23T22:09:34.075+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Starting ProtocolHandler ["http-nio-8080"]
+2026-07-23T22:09:34.207+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat started on port 8080 (http) with context path '/'
+2026-07-23T22:09:34.246+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Started SmartEmpMgmtApplication in 17.022 seconds (process running for 17.536)
+2026-07-23T22:09:43.395+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=http-nio-8080-exec-1 message=Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-23T22:09:43.395+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-1 message=Initializing Servlet 'dispatcherServlet'
+2026-07-23T22:09:43.400+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-1 message=Completed initialization in 5 ms
+2026-07-23T22:10:07.799+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=SpringApplicationShutdownHook message=event=app_shutdown status=completed application=smart-emp-mgmt message=App Stopped Successfully
+2026-07-23T22:10:07.802+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=SpringApplicationShutdownHook message=Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-23T22:10:07.805+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown initiated...
+2026-07-23T22:10:07.833+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown completed.
+2026-07-23T22:16:51.469+05:30 level=INFO  logger=o.h.validator.internal.util.Version thread=background-preinit message=HV000001: Hibernate Validator 8.0.1.Final
+2026-07-23T22:16:51.857+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Starting SmartEmpMgmtApplication using Java 22.0.2 with PID 16572 (D:\New folder\backend\target\classes started by GVS in D:\New folder\backend)
+2026-07-23T22:16:51.857+05:30 level=DEBUG logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Running with Spring Boot v3.3.2, Spring v6.1.11
+2026-07-23T22:16:51.857+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=No active profile set, falling back to 1 default profile: "default"
+2026-07-23T22:16:55.648+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-07-23T22:16:55.962+05:30 level=INFO  logger=o.s.d.r.c.RepositoryConfigurationDelegate thread=main message=Finished Spring Data repository scanning in 284 ms. Found 5 JPA repository interfaces.
+2026-07-23T22:16:58.284+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat initialized with port 8080 (http)
+2026-07-23T22:16:58.348+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Initializing ProtocolHandler ["http-nio-8080"]
+2026-07-23T22:16:58.368+05:30 level=INFO  logger=o.a.catalina.core.StandardService thread=main message=Starting service [Tomcat]
+2026-07-23T22:16:58.373+05:30 level=INFO  logger=o.a.catalina.core.StandardEngine thread=main message=Starting Servlet engine: [Apache Tomcat/10.1.26]
+2026-07-23T22:16:58.698+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=main message=Initializing Spring embedded WebApplicationContext
+2026-07-23T22:16:58.702+05:30 level=INFO  logger=o.s.b.w.s.c.ServletWebServerApplicationContext thread=main message=Root WebApplicationContext: initialization completed in 6703 ms
+2026-07-23T22:16:59.307+05:30 level=INFO  logger=o.h.jpa.internal.util.LogHelper thread=main message=HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-07-23T22:16:59.590+05:30 level=INFO  logger=org.hibernate.Version thread=main message=HHH000412: Hibernate ORM core version 6.5.2.Final
+2026-07-23T22:16:59.726+05:30 level=INFO  logger=o.h.c.i.RegionFactoryInitiator thread=main message=HHH000026: Second-level cache disabled
+2026-07-23T22:17:00.740+05:30 level=INFO  logger=o.s.o.j.p.SpringPersistenceUnitInfo thread=main message=No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-07-23T22:17:00.863+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Starting...
+2026-07-23T22:17:01.463+05:30 level=INFO  logger=com.zaxxer.hikari.pool.HikariPool thread=main message=HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@16029e2f
+2026-07-23T22:17:01.469+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=main message=HikariPool-1 - Start completed.
+2026-07-23T22:17:05.455+05:30 level=INFO  logger=o.h.e.t.j.p.i.JtaPlatformInitiator thread=main message=HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-07-23T22:17:05.750+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=main message=Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-07-23T22:17:06.574+05:30 level=INFO  logger=o.s.d.j.r.query.QueryEnhancerFactory thread=main message=Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-07-23T22:17:07.704+05:30 level=DEBUG logger=c.e.smartemp.security.JwtAuthFilter thread=main message=Filter 'jwtAuthFilter' configured for use
+2026-07-23T22:17:08.412+05:30 level=INFO  logger=o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer thread=main message=Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2026-07-23T22:17:08.414+05:30 level=WARN  logger=o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer thread=main message=Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used for username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider.
+2026-07-23T22:17:08.939+05:30 level=WARN  logger=o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration thread=main message=spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-07-23T22:17:11.549+05:30 level=INFO  logger=o.a.coyote.http11.Http11NioProtocol thread=main message=Starting ProtocolHandler ["http-nio-8080"]
+2026-07-23T22:17:11.665+05:30 level=INFO  logger=o.s.b.w.e.tomcat.TomcatWebServer thread=main message=Tomcat started on port 8080 (http) with context path '/'
+2026-07-23T22:17:11.691+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=main message=Started SmartEmpMgmtApplication in 21.628 seconds (process running for 22.753)
+2026-07-23T22:17:11.890+05:30 level=INFO  logger=o.a.c.c.C.[Tomcat].[localhost].[/] thread=http-nio-8080-exec-1 message=Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-07-23T22:17:11.890+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-1 message=Initializing Servlet 'dispatcherServlet'
+2026-07-23T22:17:11.890+05:30 level=INFO  logger=o.s.web.servlet.DispatcherServlet thread=http-nio-8080-exec-1 message=Completed initialization in 0 ms
+2026-07-23T22:17:24.523+05:30 level=INFO  logger=o.s.api.AbstractOpenApiResource thread=http-nio-8080-exec-1 message=Init duration for springdoc-openapi is: 1612 ms
+2026-07-23T22:18:59.839+05:30 level=INFO  logger=c.e.smartemp.SmartEmpMgmtApplication thread=SpringApplicationShutdownHook message=event=app_shutdown status=completed application=smart-emp-mgmt message=App Stopped Successfully
+2026-07-23T22:18:59.842+05:30 level=INFO  logger=o.s.o.j.LocalContainerEntityManagerFactoryBean thread=SpringApplicationShutdownHook message=Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-07-23T22:18:59.846+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown initiated...
+2026-07-23T22:18:59.878+05:30 level=INFO  logger=com.zaxxer.hikari.HikariDataSource thread=SpringApplicationShutdownHook message=HikariPool-1 - Shutdown completed.

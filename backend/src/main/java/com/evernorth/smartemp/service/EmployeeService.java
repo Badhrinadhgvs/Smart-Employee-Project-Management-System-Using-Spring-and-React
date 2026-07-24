@@ -129,5 +129,47 @@ public class EmployeeService {
                 .designation(u.getDesignation())
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public EmployeeDto.ProfileResponse getMyProfile(String username) {
+        User u = repo.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User profile not found"));
+        var userTasks = tasks.findByAssignedEmployeeId(u.getId());
+        int assignedTaskCount = userTasks.size();
+        int completedTaskCount = (int) userTasks.stream().filter(t -> t.getStatus() == com.evernorth.smartemp.enums.TaskStatus.COMPLETED).count();
+        int assignedProjectCount = u.getProjects() != null ? u.getProjects().size() : 0;
+
+        return EmployeeDto.ProfileResponse.builder()
+                .id(u.getId())
+                .username(u.getUsername())
+                .email(u.getEmail())
+                .firstName(u.getFirstName())
+                .lastName(u.getLastName())
+                .department(u.getDepartment())
+                .designation(u.getDesignation())
+                .salary(u.getSalary())
+                .phone(u.getPhone())
+                .hireDate(u.getHireDate())
+                .roles(u.getRoles().stream().map(Enum::name).toList())
+                .assignedTaskCount(assignedTaskCount)
+                .completedTaskCount(completedTaskCount)
+                .assignedProjectCount(assignedProjectCount)
+                .build();
+    }
+
+    @Transactional
+    public EmployeeDto.ProfileResponse updateMyProfile(String username, EmployeeDto.ProfileUpdateRequest r) {
+        User u = repo.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User profile not found"));
+        if (r.getFirstName() != null) u.setFirstName(r.getFirstName());
+        if (r.getLastName() != null) u.setLastName(r.getLastName());
+        if (r.getPhone() != null) u.setPhone(r.getPhone());
+        if (r.getDepartment() != null) u.setDepartment(r.getDepartment());
+        if (r.getPassword() != null && !r.getPassword().isBlank()) {
+            u.setPassword(enc.encode(r.getPassword()));
+        }
+        repo.save(u);
+        return getMyProfile(username);
+    }
 }
 

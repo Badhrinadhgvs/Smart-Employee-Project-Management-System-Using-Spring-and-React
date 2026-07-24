@@ -18,4 +18,12 @@ public final class EmployeeDto {
         private String username; @NotBlank private String email; private String firstName; private String lastName;
         private String department; private String designation; private Double salary; private String phone; private List<String> roles; private String password;
     }
+    @Getter @Setter @Builder public static class ProfileResponse {
+        private Long id; private String username; private String email; private String firstName; private String lastName;
+        private String department; private String designation; private Double salary; private String phone; private LocalDate hireDate; private List<String> roles;
+        private int assignedTaskCount; private int completedTaskCount; private int assignedProjectCount;
+    }
+    @Getter @Setter @Builder public static class ProfileUpdateRequest {
+        private String firstName; private String lastName; private String phone; private String department; private String password;
+    }
 }

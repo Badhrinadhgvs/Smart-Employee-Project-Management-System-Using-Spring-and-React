@@ -244,6 +244,31 @@ export default function ProjectsPage() {
                     {project.description || 'No description provided.'}
                   </Typography>
 
+                  {/* Task Progress Bar */}
+                  <Box sx={{ mb: 2, p: 1.5, borderRadius: 2, bgcolor: 'action.hover' }}>
+                    <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 0.75 }}>
+                      <Typography variant="caption" fontWeight={700} color="text.secondary">
+                        Task Progress
+                      </Typography>
+                      <Typography variant="caption" fontWeight={700} color={(project.progressPercentage || 0) === 100 ? 'success.main' : 'primary.main'}>
+                        {project.progressPercentage || 0}% ({(project.completedTaskCount || 0)}/{(project.taskCount || 0)} tasks)
+                      </Typography>
+                    </Stack>
+                    <LinearProgress
+                      variant="determinate"
+                      value={project.progressPercentage || 0}
+                      sx={{
+                        height: 8,
+                        borderRadius: 4,
+                        bgcolor: 'divider',
+                        '& .MuiLinearProgress-bar': {
+                          borderRadius: 4,
+                          bgcolor: (project.progressPercentage || 0) === 100 ? '#2FA36B' : '#0E8F82',
+                        },
+                      }}
+                    />
+                  </Box>
+
                   <Stack direction="row" alignItems="center" spacing={0.75} sx={{ mb: 1.5, color: 'text.secondary' }}>
                     <CalendarTodayOutlinedIcon sx={{ fontSize: 15 }} />
                     <Typography variant="caption">
