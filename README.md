@@ -200,11 +200,9 @@ erDiagram
 
 ### 3.3 Authentication & Authorization Flowchart
 
-![Authentication Flowchart](docs/screenshots/login-portal.png)
-*Figure 3.3: Authentication & Authorization Flowchart.*
 
 <details>
-<summary>Click to view Mermaid Source Code</summary>
+<summary>Click to view Flowchart</summary>
 
 ```mermaid
 graph TD
@@ -234,11 +232,9 @@ graph TD
 
 ### 3.4 Employee Management Flowchart
 
-![Employee Management Flowchart](docs/screenshots/adminview-employees.png)
-*Figure 3.4: Employee Management Lifecycle Flowchart.*
 
 <details>
-<summary>Click to view Mermaid Source Code</summary>
+<summary>Click to view Flowchart</summary>
 
 ```mermaid
 graph TD
@@ -266,11 +262,8 @@ graph TD
 
 ### 3.5 Project Management Flowchart
 
-![Project Management Flowchart](docs/screenshots/adminview-projects.png)
-*Figure 3.5: Project Management & Progress Calculation Flowchart.*
-
 <details>
-<summary>Click to view Mermaid Source Code</summary>
+<summary>Click to view Flowchart</summary>
 
 ```mermaid
 graph TD
@@ -296,11 +289,8 @@ graph TD
 
 ### 3.6 Task Management & Progress Feedback Flowchart
 
-![Task Management Flowchart](docs/screenshots/adminview-tasks.png)
-*Figure 3.6: Task Tracking & Status Transition Flowchart.*
-
 <details>
-<summary>Click to view Mermaid Source Code</summary>
+<summary>Click to view Flowchart</summary>
 
 ```mermaid
 graph TD
@@ -328,11 +318,9 @@ graph TD
 
 ### 3.7 End-to-End API Request Lifecycle & Error Handling Flowchart
 
-![API Request Lifecycle Flowchart](docs/screenshots/architecture_flowchart.png)
-*Figure 3.7: API Request Execution Lifecycle & Exception Interception Flowchart.*
 
 <details>
-<summary>Click to view Mermaid Source Code</summary>
+<summary>Click to view Flowchart</summary>
 
 ```mermaid
 graph TD
