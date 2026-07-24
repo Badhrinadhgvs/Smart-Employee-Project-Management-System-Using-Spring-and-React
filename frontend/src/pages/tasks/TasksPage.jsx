@@ -26,11 +26,13 @@ import EmptyState from '../../components/common/EmptyState';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import StatusPill from '../../components/common/StatusPill';
 import PriorityPill from '../../components/common/PriorityPill';
+import ExportMenu from '../../components/common/ExportMenu';
 import TaskFormDialog from './TaskFormDialog';
 import { listAllTasks, listTasksByEmployee, deleteTask, updateTaskStatus } from '../../api/taskApi';
 import { useAuth } from '../../context/AuthContext';
 import { useNotify } from '../../context/NotificationContext';
 import { formatDate } from '../../utils/format';
+import { downloadCsv, downloadPdf } from '../../utils/exportUtils';
 
 const STATUS_OPTIONS = ['', 'PENDING', 'IN_PROGRESS', 'COMPLETED'];
 const PRIORITY_OPTIONS = ['', 'LOW', 'MEDIUM', 'HIGH'];
@@ -114,17 +116,56 @@ export default function TasksPage() {
     }
   };
 
+  const exportHeaders = ['Task Title', 'Project', 'Assigned Employee', 'Priority', 'Deadline', 'Status', 'Remarks'];
+  const getExportRows = () =>
+    filtered.map((t) => [
+      t.title,
+      t.project?.name || 'No project',
+      t.assignedEmployee ? `${t.assignedEmployee.firstName} ${t.assignedEmployee.lastName}` : 'Unassigned',
+      t.priority,
+      t.deadline ? formatDate(t.deadline) : 'No deadline',
+      t.status,
+      t.remarks || '',
+    ]);
+
+  const handleExportCsv = () => {
+    downloadCsv(isAdmin ? 'all_tasks_report.csv' : 'my_tasks_report.csv', exportHeaders, getExportRows());
+    notify('Task report downloaded as CSV.');
+  };
+
+  const handleExportPdf = () => {
+    const visuals = [
+      { label: 'Completed', value: filtered.filter((t) => t.status === 'COMPLETED').length },
+      { label: 'In Progress', value: filtered.filter((t) => t.status === 'IN_PROGRESS').length },
+      { label: 'Pending', value: filtered.filter((t) => t.status === 'PENDING').length },
+    ];
+    downloadPdf(
+      isAdmin ? 'all_tasks_report.pdf' : 'my_tasks_report.pdf',
+      isAdmin ? 'All Project Tasks Report' : `My Assigned Tasks (${user?.firstName || user?.username})`,
+      exportHeaders,
+      getExportRows(),
+      `${filtered.length} task(s) listed`,
+      visuals
+    );
+    notify('Task report downloaded as PDF.');
+  };
+
   return (
     <Box>
       <PageHeader
         title={isAdmin ? 'Tasks' : 'My tasks'}
         subtitle={isAdmin ? `${tasks.length} tasks across all projects.` : `${tasks.length} tasks assigned to you.`}
         actions={
-          isAdmin && (
-            <Button variant="contained" color="secondary" startIcon={<AddOutlinedIcon />} onClick={openCreate}>
-              New task
-            </Button>
-          )
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            {filtered.length > 0 && (
+              <ExportMenu onExportCsv={handleExportCsv} onExportPdf={handleExportPdf} buttonText="Export Tasks" />
+            )}
+            {isAdmin && (
+              <Button variant="contained" color="secondary" startIcon={<AddOutlinedIcon />} onClick={openCreate}>
+                New task
+              </Button>
+            )}
+          </Stack>
         }
       />
 

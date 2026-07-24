@@ -18,6 +18,8 @@ import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import Logo from '../../components/common/Logo';
 import { useAuth } from '../../context/AuthContext';
 
+import { validateUsername, validatePassword } from '../../utils/validation';
+
 export default function Login({ onToggleTheme, mode }) {
   const { signIn } = useAuth();
   const navigate = useNavigate();
@@ -30,8 +32,14 @@ export default function Login({ onToggleTheme, mode }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    if (!form.username || !form.password) {
-      setError('Enter your username and password.');
+    const userErr = validateUsername(form.username);
+    if (userErr) {
+      setError(userErr);
+      return;
+    }
+    const passErr = validatePassword(form.password, true);
+    if (passErr) {
+      setError(passErr);
       return;
     }
     setLoading(true);

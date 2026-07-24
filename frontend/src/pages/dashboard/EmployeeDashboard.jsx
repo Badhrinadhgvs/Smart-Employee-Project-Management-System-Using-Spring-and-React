@@ -17,10 +17,12 @@ import PageHeader from '../../components/common/PageHeader';
 import StatusPill from '../../components/common/StatusPill';
 import PriorityPill from '../../components/common/PriorityPill';
 import EmptyState from '../../components/common/EmptyState';
+import ExportMenu from '../../components/common/ExportMenu';
 import { useAuth } from '../../context/AuthContext';
 import { useNotify } from '../../context/NotificationContext';
 import { listTasksByEmployee, updateTaskStatus } from '../../api/taskApi';
 import { formatDate, daysUntil } from '../../utils/format';
+import { downloadCsv, downloadPdf } from '../../utils/exportUtils';
 import { tokens } from '../../theme';
 
 function CompletionRing({ percent }) {
@@ -104,9 +106,51 @@ export default function EmployeeDashboard() {
     }
   };
 
+  const exportHeaders = ['Task Title', 'Project', 'Priority', 'Deadline', 'Status', 'Remarks'];
+  const getExportRows = () =>
+    tasks.map((t) => [
+      t.title,
+      t.project?.name || 'No project',
+      t.priority,
+      t.deadline ? formatDate(t.deadline) : 'No deadline',
+      t.status,
+      t.remarks || '',
+    ]);
+
+  const handleExportCsv = () => {
+    downloadCsv(`${user?.username || 'employee'}_assigned_tasks.csv`, exportHeaders, getExportRows());
+    notify('Employee task list downloaded as CSV.');
+  };
+
+  const handleExportPdf = () => {
+    const summary = `${completed} / ${tasks.length} tasks completed (${percent}%)`;
+    const visuals = [
+      { label: 'Completed', value: completed },
+      { label: 'In Progress', value: tasks.filter((t) => t.status === 'IN_PROGRESS').length },
+      { label: 'Pending', value: tasks.filter((t) => t.status === 'PENDING').length },
+    ];
+    downloadPdf(
+      `${user?.username || 'employee'}_assigned_tasks.pdf`,
+      `My Assigned Work & Project Tasks (${user?.firstName || user?.username})`,
+      exportHeaders,
+      getExportRows(),
+      summary,
+      visuals
+    );
+    notify('Employee task list downloaded as PDF.');
+  };
+
   return (
     <Box>
-      <PageHeader title={`Hi, ${user?.firstName || user?.username}`} subtitle="Here's where your work stands today." />
+      <PageHeader
+        title={`Hi, ${user?.firstName || user?.username}`}
+        subtitle="Here's where your work stands today."
+        actions={
+          tasks.length > 0 ? (
+            <ExportMenu onExportCsv={handleExportCsv} onExportPdf={handleExportPdf} buttonText="Download My Work" />
+          ) : null
+        }
+      />
 
       {loading && <LinearProgress color="secondary" sx={{ mb: 3, borderRadius: 1 }} />}
 

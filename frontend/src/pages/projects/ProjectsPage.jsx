@@ -30,10 +30,12 @@ import EmptyState from '../../components/common/EmptyState';
 import ConfirmDialog from '../../components/common/ConfirmDialog';
 import StatusPill from '../../components/common/StatusPill';
 import PriorityPill from '../../components/common/PriorityPill';
+import ExportMenu from '../../components/common/ExportMenu';
 import ProjectFormDialog from './ProjectFormDialog';
 import { searchProjects, deleteProject } from '../../api/projectApi';
 import { useNotify } from '../../context/NotificationContext';
 import { formatDate, initialsOf } from '../../utils/format';
+import { downloadCsv, downloadPdf } from '../../utils/exportUtils';
 
 const STATUS_OPTIONS = ['', 'NOT_STARTED', 'IN_PROGRESS', 'COMPLETED', 'SUSPENDED'];
 const PRIORITY_OPTIONS = ['', 'LOW', 'MEDIUM', 'HIGH'];
@@ -127,15 +129,50 @@ export default function ProjectsPage() {
     }
   };
 
+  const exportHeaders = ['Project Name', 'Status', 'Priority', 'Start Date', 'End Date', 'Progress (%)', 'Assigned Employees'];
+  const getExportRows = () =>
+    rows.map((p) => [
+      p.name,
+      p.status,
+      p.priority,
+      p.startDate ? formatDate(p.startDate) : '—',
+      p.endDate ? formatDate(p.endDate) : '—',
+      `${p.progressPercentage || 0}%`,
+      (p.employees || []).map((e) => `${e.firstName} ${e.lastName}`).join('; ') || 'None',
+    ]);
+
+  const handleExportCsv = () => {
+    downloadCsv('projects_list.csv', exportHeaders, getExportRows());
+    notify('Projects list downloaded as CSV.');
+  };
+
+  const handleExportPdf = () => {
+    const visuals = rows.slice(0, 5).map((p) => ({ label: p.name, value: p.progressPercentage || 0 }));
+    downloadPdf(
+      'projects_list.pdf',
+      'Projects Summary Report',
+      exportHeaders,
+      getExportRows(),
+      `${totalElements} total project(s)`,
+      visuals
+    );
+    notify('Projects list downloaded as PDF.');
+  };
+
   return (
     <Box>
       <PageHeader
         title="Projects"
         subtitle={`${totalElements} projects tracked.`}
         actions={
-          <Button variant="contained" color="secondary" startIcon={<AddOutlinedIcon />} onClick={openCreate}>
-            New project
-          </Button>
+          <Stack direction="row" spacing={1.5} alignItems="center">
+            {rows.length > 0 && (
+              <ExportMenu onExportCsv={handleExportCsv} onExportPdf={handleExportPdf} buttonText="Export Projects" />
+            )}
+            <Button variant="contained" color="secondary" startIcon={<AddOutlinedIcon />} onClick={openCreate}>
+              New project
+            </Button>
+          </Stack>
         }
       />
 

@@ -4,6 +4,7 @@ import com.evernorth.smartemp.entity.*;
 import com.evernorth.smartemp.enums.*;
 import com.evernorth.smartemp.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Set;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class DataInitializer implements CommandLineRunner {
@@ -27,6 +29,7 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.findByUsername("john_doe").ifPresent(u -> { u.setApproved(true); userRepository.save(u); });
             userRepository.findByUsername("priya_r").ifPresent(u -> { u.setApproved(true); userRepository.save(u); });
             seedNotificationsIfEmpty();
+            log.info("System data loaded completely. Frontend URL: http://localhost:5173");
             return;
         }
 
@@ -52,6 +55,7 @@ public class DataInitializer implements CommandLineRunner {
                 .priority(Priority.MEDIUM).assignedEmployee(priya).project(project).build());
 
         seedNotificationsIfEmpty();
+        log.info("Initial seed data loaded completely. Frontend URL: http://localhost:5173");
     }
 
     private void seedNotificationsIfEmpty() {

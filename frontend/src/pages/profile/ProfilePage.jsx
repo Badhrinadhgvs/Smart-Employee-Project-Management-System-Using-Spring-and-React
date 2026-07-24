@@ -33,6 +33,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PageHeader from '../../components/common/PageHeader';
 import { getMyProfile, updateMyProfile } from '../../api/profileApi';
 import { useNotify } from '../../context/NotificationContext';
+import { validateName, validatePhone, validatePassword } from '../../utils/validation';
 import { formatDate, initialsOf } from '../../utils/format';
 import { tokens } from '../../theme';
 
@@ -115,6 +116,19 @@ export default function ProfilePage() {
 
   const handleSave = async (e) => {
     e.preventDefault();
+
+    const fnErr = validateName(form.firstName, 'First name');
+    if (fnErr) { notify(fnErr, 'error'); return; }
+
+    const lnErr = validateName(form.lastName, 'Last name');
+    if (lnErr) { notify(lnErr, 'error'); return; }
+
+    const phoneErr = validatePhone(form.phone);
+    if (phoneErr) { notify(phoneErr, 'error'); return; }
+
+    const passErr = validatePassword(form.password, false);
+    if (passErr) { notify(passErr, 'error'); return; }
+
     setSaving(true);
     try {
       const updated = await updateMyProfile(form);

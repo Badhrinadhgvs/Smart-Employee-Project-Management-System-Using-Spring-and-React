@@ -17,6 +17,7 @@ import {
 import { createProject, updateProject } from '../../api/projectApi';
 import { listAllEmployees } from '../../api/employeeApi';
 import { useNotify } from '../../context/NotificationContext';
+import { validateTitle, validateDate } from '../../utils/validation';
 
 const EMPTY = {
   name: '',
@@ -59,10 +60,15 @@ export default function ProjectFormDialog({ open, project, onClose, onSaved }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.name) {
-      notify('Project name is required.', 'error');
-      return;
-    }
+    const titleErr = validateTitle(form.name, 'Project name');
+    if (titleErr) { notify(titleErr, 'error'); return; }
+
+    const sdErr = validateDate(form.startDate, 'Start date');
+    if (sdErr) { notify(sdErr, 'error'); return; }
+
+    const edErr = validateDate(form.endDate, 'End date');
+    if (edErr) { notify(edErr, 'error'); return; }
+
     if (form.startDate && form.endDate && form.endDate < form.startDate) {
       notify('End date cannot be before the start date.', 'error');
       return;

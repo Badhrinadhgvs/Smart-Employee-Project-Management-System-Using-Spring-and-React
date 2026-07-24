@@ -4,7 +4,7 @@ services:
     container_name: smart-emp-db
     environment:
       MYSQL_DATABASE: Employee_Management
-      MYSQL_ROOT_PASSWORD: Badhri
+      MYSQL_ROOT_PASSWORD: root
     volumes:
       - mysql-data:/var/lib/mysql
     healthcheck:

@@ -3,6 +3,7 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { Box, Paper, TextField, Button, Typography, Alert, Link, Grid } from '@mui/material';
 import IconButton from '@mui/material/IconButton'; import LightModeOutlinedIcon from '@mui/icons-material/LightModeOutlined'; import DarkModeOutlinedIcon from '@mui/icons-material/DarkModeOutlined';
 import * as authApi from '../../api/authApi';
+import { validateName, validateUsername, validateEmail, validatePassword } from '../../utils/validation';
 
 const EMPTY = { username: '', email: '', password: '', firstName: '', lastName: '' };
 
@@ -19,10 +20,22 @@ export default function Register({ onToggleTheme, mode }) {
     e.preventDefault();
     setError('');
     setSuccess('');
-    if (!form.username || !form.email || !form.password || !form.firstName || !form.lastName) {
-      setError('Please fill in every field.');
-      return;
-    }
+
+    const fnErr = validateName(form.firstName, 'First name');
+    if (fnErr) { setError(fnErr); return; }
+
+    const lnErr = validateName(form.lastName, 'Last name');
+    if (lnErr) { setError(lnErr); return; }
+
+    const userErr = validateUsername(form.username);
+    if (userErr) { setError(userErr); return; }
+
+    const emailErr = validateEmail(form.email);
+    if (emailErr) { setError(emailErr); return; }
+
+    const passErr = validatePassword(form.password, true);
+    if (passErr) { setError(passErr); return; }
+
     setLoading(true);
     try {
       await authApi.register(form);

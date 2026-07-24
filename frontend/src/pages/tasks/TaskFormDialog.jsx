@@ -17,6 +17,7 @@ import { createTask, updateTask } from '../../api/taskApi';
 import { listAllEmployees } from '../../api/employeeApi';
 import { searchProjects } from '../../api/projectApi';
 import { useNotify } from '../../context/NotificationContext';
+import { validateTitle, validateDate } from '../../utils/validation';
 
 const EMPTY = {
   title: '',
@@ -63,14 +64,11 @@ export default function TaskFormDialog({ open, task, onClose, onSaved }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title) {
-      notify('Task title is required.', 'error');
-      return;
-    }
-    if (form.deadline && !/^\d{4}-\d{2}-\d{2}$/.test(form.deadline)) {
-      notify('Enter a valid deadline date.', 'error');
-      return;
-    }
+    const titleErr = validateTitle(form.title, 'Task title');
+    if (titleErr) { notify(titleErr, 'error'); return; }
+
+    const dateErr = validateDate(form.deadline, 'Deadline');
+    if (dateErr) { notify(dateErr, 'error'); return; }
     setSaving(true);
     try {
       const payload = {

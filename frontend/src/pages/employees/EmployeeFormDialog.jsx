@@ -13,6 +13,14 @@ import {
 } from '@mui/material';
 import { createEmployee, updateEmployee } from '../../api/employeeApi';
 import { useNotify } from '../../context/NotificationContext';
+import {
+  validateName,
+  validateUsername,
+  validateEmail,
+  validatePhone,
+  validateSalary,
+  validatePassword,
+} from '../../utils/validation';
 
 const EMPTY = {
   username: '',
@@ -68,26 +76,29 @@ export default function EmployeeFormDialog({ open, employee, onClose, onSaved })
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.username || !form.email || !form.firstName || !form.lastName) {
-      notify('Username, email, and full name are required.', 'error');
-      return;
+
+    const fnErr = validateName(form.firstName, 'First name');
+    if (fnErr) { notify(fnErr, 'error'); return; }
+
+    const lnErr = validateName(form.lastName, 'Last name');
+    if (lnErr) { notify(lnErr, 'error'); return; }
+
+    if (!isEdit) {
+      const userErr = validateUsername(form.username);
+      if (userErr) { notify(userErr, 'error'); return; }
     }
-    if (!isEdit && !form.password) {
-      notify('A password is required for new employees.', 'error');
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
-      notify('Enter a valid email address.', 'error');
-      return;
-    }
-    if (form.phone && !/^\d{10}$/.test(form.phone.trim())) {
-      notify('Phone number must contain exactly 10 digits.', 'error');
-      return;
-    }
-    if (form.salary !== '' && (!Number.isFinite(Number(form.salary)) || Number(form.salary) < 0)) {
-      notify('Salary must be a valid non-negative number.', 'error');
-      return;
-    }
+
+    const emailErr = validateEmail(form.email);
+    if (emailErr) { notify(emailErr, 'error'); return; }
+
+    const phoneErr = validatePhone(form.phone);
+    if (phoneErr) { notify(phoneErr, 'error'); return; }
+
+    const salaryErr = validateSalary(form.salary);
+    if (salaryErr) { notify(salaryErr, 'error'); return; }
+
+    const passErr = validatePassword(form.password, !isEdit);
+    if (passErr) { notify(passErr, 'error'); return; }
     setSaving(true);
     try {
       const payload = {

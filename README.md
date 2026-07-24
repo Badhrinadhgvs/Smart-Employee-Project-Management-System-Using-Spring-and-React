@@ -10,7 +10,7 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 | :--- | :--- | :--- |
 | **Frontend Framework** | React 18, Vite 5 | Single Page Application framework and build tool |
 | **Frontend UI & Styling** | Material UI (MUI v5), Emotion | Design system components, dark/light theme support |
-| **Data Visualization & Export**| Recharts, jsPDF, jsPDF-AutoTable | Analytics charts and PDF report generation |
+| **Data Export & Visualization**| Recharts, jsPDF, jsPDF-AutoTable, Custom CSV | Analytics charts, dual CSV & PDF report exports |
 | **HTTP Client & Routing** | Axios, React Router v6 | API request handling with JWT interceptors & route protection |
 | **Backend Framework** | Java 17, Spring Boot 3.3.2 | Core backend framework and REST API engine |
 | **Security & Auth** | Spring Security, JJWT (0.12.6) | Stateless JWT authentication & Role-Based Access Control |
@@ -32,9 +32,13 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 - [x] **Role-Based Access Control (RBAC)**: Fine-grained permissions for `ROLE_ADMIN` and `ROLE_EMPLOYEE`.
 - [x] **Admin Account Approval**: Newly registered users require explicit Admin approval before gaining full access.
 
+### Client-Side Form Validation & Regex Patterns
+- [x] **Pattern-Based Regex Validation**: Input fields across Registration, Login, Employee Creation/Edit, Project Creation/Edit, Task Assignment, and Profile Edit forms strictly enforce regular expressions (`USERNAME`, `EMAIL`, `NAME`, `PHONE`, `PASSWORD`, `SALARY`, `TITLE`, `DATE`).
+- [x] **Real-Time User Feedback**: Instant, clear notification toasts and inline errors for pattern mismatches.
+
 ### User Profile Management
 - [x] **Personal Profile Dashboard**: View account details, department, designation, and hire date.
-- [x] **Profile Editing**: Edit personal details (First Name, Last Name, Phone, Department) and update password directly from the user profile modal.
+- [x] **Profile Editing**: Edit personal details (First Name, Last Name, Phone, Department) and update password directly from the user profile modal with regex pattern checks.
 - [x] **Personal Work Stats**: Real-time snapshot of assigned tasks, completed tasks, completion percentage, and active projects.
 
 ### Employee Management
@@ -47,27 +51,30 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 - [x] **Employee Assignment**: Many-to-Many assignment connecting multiple employees to projects.
 - [x] **Dynamic Task Completion Progress Bar**: Interactive linear progress bar on project cards calculated in real-time based on completed tasks.
 - [x] **Status, Priority & Deadlines**: Manage project status (`NOT_STARTED`, `IN_PROGRESS`, `COMPLETED`, `SUSPENDED`) and priority (`LOW`, `MEDIUM`, `HIGH`).
+- [x] **Project Export**: Export project summaries and progress breakdowns in CSV or PDF.
 
 ### Task Management
 - [x] **Create & Assign Tasks**: Assign specific tasks to employees under active projects.
 - [x] **Task Status & Progress Tracking**: Statuses include `PENDING`, `IN_PROGRESS`, `COMPLETED`.
 - [x] **Task Status Updates**: Employees can update task statuses (`PATCH /api/tasks/{id}/status`).
 - [x] **Remarks & Notes**: Add optional notes/remarks to tasks.
+- [x] **Task Export**: Export task lists with project associations in CSV or PDF.
 
 ### Dashboards & Analytics
 - [x] **Admin Dashboard**: Live KPI cards, task breakdown pie charts, project status bar charts, team workload charts, 7-day deadline trends, and a manual Test Email alert modal.
-- [x] **Employee Dashboard**: Workload statistics, personal assigned task list, status toggles, and upcoming deadline countdowns.
+- [x] **Employee Dashboard**: Workload statistics, personal assigned task list, status toggles, upcoming deadline countdowns, and direct **CSV / PDF download options** for employee task data.
 
 ### Search & Filtering
 - [x] **Search**: Instant search filtering across employees, projects, and task titles.
 - [x] **Filter by Department**: Filter employee listings by department name.
 - [x] **Filter by Status & Priority**: Filter projects and tasks by status or priority levels.
 
-### Reports & PDF Export
+### Reports & Data Export (CSV / PDF Options)
+- [x] **Employee Project & Task Downloads**: Employees can export their assigned tasks and project details from their Dashboard and Tasks views.
+- [x] **Dual Format Download Options**: One-click dropdown supporting both **CSV** and **PDF** downloads across Dashboards, Projects, Tasks, and Reports.
 - [x] **Employee-wise Task Report**: Detailed task distribution table per employee.
 - [x] **Project Progress Report**: Progress percentage and task breakdown per project.
 - [x] **Pending Task Report**: Summary of open and overdue tasks across teams.
-- [x] **PDF Export**: One-click professional PDF report generation with formatted auto-tables using `jspdf`.
 
 ### Advanced Capabilities & Documentation
 - [x] **Swagger / OpenAPI Documentation**: Live interactive REST docs at `/swagger-ui.html`.
@@ -80,11 +87,11 @@ The **Smart Employee & Project Management System** is a full-stack enterprise we
 
 ---
 
-## 3. System Flowchart & ER Diagram
+## 3. System Flowcharts & Diagrams
 
-### 3.1 Architecture Flowchart
+### 3.1 High-Level Architecture Flowchart
 ![Architecture Flowchart](docs/screenshots/architecture_flowchart.png)
-*Figure 1: High-level System Architecture & Execution Flowchart.*
+*Figure 3.1: High-level System Architecture & Execution Flowchart.*
 
 <details>
 <summary>Click to view Mermaid Source Code</summary>
@@ -111,7 +118,7 @@ graph TD
 
 ### 3.2 Database Entity-Relationship (ER) Diagram
 ![Database ER Diagram](docs/screenshots/database_er_diagram.png)
-*Figure 2: Relational Database Schema & Entity Relationships.*
+*Figure 3.2: Relational Database Schema & Entity Relationships.*
 
 <details>
 <summary>Click to view Mermaid Source Code</summary>
@@ -160,6 +167,161 @@ erDiagram
         boolean is_read
         datetime created_at
     }
+```
+</details>
+
+---
+
+### 3.3 Authentication & Authorization Flowchart
+*Figure 3.3: Authentication, Admin Approval Gate, JWT Issuance, Token Validation, & Role Routing Flow.*
+
+<details>
+<summary>Click to view Mermaid Source Code</summary>
+
+```mermaid
+graph TD
+    Reg([New User]) -->|1. Submit Registration| RegForm["POST /api/auth/register"]
+    RegForm -->|Save as approved=false| DB[(MySQL Database)]
+    DB -.->|Notify Admin| AdminGate{Admin Approval Gate}
+
+    AdminGate -->|PATCH /api/admin/employees/id/approve| ApproveUser[Account Approved]
+    ApproveUser -->|2. Login Attempt| LoginForm["POST /api/auth/login"]
+
+    LoginForm -->|Validate Credentials| AuthFilter{Spring Security}
+    AuthFilter -->|Credentials Valid| JwtGen[Generate JWT Token]
+    AuthFilter -->|Invalid or Unapproved| Deny["401 / 403 Error"]
+
+    JwtGen -->|3. Return Token| ClientApp[React Frontend Storage]
+    ClientApp -->|4. Request Protected Route| JwtCheck[JwtAuthFilter Validation]
+    JwtCheck -->|Bearer Token Valid| RoleCheck{Extract User Roles}
+
+    RoleCheck -->|ROLE_ADMIN| AdminPortal[Admin Portal /dashboard]
+    RoleCheck -->|ROLE_EMPLOYEE| EmpPortal[Employee Portal /]
+
+    ClientApp -->|5. Click Logout| Logout[Clear Local Token & Redirect to /login]
+```
+</details>
+
+---
+
+### 3.4 Employee Management Flowchart
+*Figure 3.4: Administrative Employee CRUD Lifecycle, Search, Server Pagination, & Approval Sub-Flow.*
+
+<details>
+<summary>Click to view Mermaid Source Code</summary>
+
+```mermaid
+graph TD
+    Admin([System Admin]) -->|Access /employees| EmpPage[Employee Management Page]
+
+    EmpPage -->|Search, Filter, & Sort| ServerReq["GET /api/employees"]
+    ServerReq -->|Pageable & Sort Query| DB[(MySQL Database)]
+    DB -->|Paginated Employee List| EmpPage
+
+    EmpPage -->|1. Create Employee| AddEmp["POST /api/admin/employees"]
+    EmpPage -->|2. Edit Profile| EditEmp["PUT /api/admin/employees/{id}"]
+    EmpPage -->|3. Delete Employee| DelEmp["DELETE /api/admin/employees/{id}"]
+    EmpPage -->|4. Approve Registration| ApprEmp["PATCH /api/admin/employees/{id}/approve"]
+
+    AddEmp --> DB
+    EditEmp --> DB
+    DelEmp --> DB
+    ApprEmp --> DB
+
+    ApprEmp -.->|Trigger Async Event| Mail[EmailService: Account Approved Alert]
+```
+</details>
+
+---
+
+### 3.5 Project Management Flowchart
+*Figure 3.5: Project Lifecycle, Many-to-Many Employee Assignment, & Task Progress Calculation Flow.*
+
+<details>
+<summary>Click to view Mermaid Source Code</summary>
+
+```mermaid
+graph TD
+    Admin([System Admin]) -->|Access /projects| ProjPage[Project Management Page]
+
+    ProjPage -->|1. Create Project| NewProj["POST /api/projects"]
+    ProjPage -->|2. Update Project| UpdateProj["PUT /api/projects/{id}"]
+    ProjPage -->|3. Delete Project| DeleteProj["DELETE /api/projects/{id}"]
+
+    NewProj -->|Assign Employees M:N| MapEmployees[project_employees Join Table]
+    NewProj -->|Set Metadata| SetDetails["Status, Priority, Start & End Dates"]
+
+    SetDetails --> DB[(MySQL Database)]
+    MapEmployees --> DB
+
+    DB -->|Fetch Linked Tasks| CalcProgress["Calculate Completed / Total Tasks"]
+    CalcProgress -->|Compute Percentage| ProgressVal["Progress % (e.g. 75%)"]
+    ProgressVal -->|Render Card Progress Bar| UI[Project UI Cards]
+```
+</details>
+
+---
+
+### 3.6 Task Management & Progress Feedback Flowchart
+*Figure 3.6: Task Creation, Employee Assignment, Status Transitions, & Feedback Loop into Project Progress.*
+
+<details>
+<summary>Click to view Mermaid Source Code</summary>
+
+```mermaid
+graph TD
+    Admin([System Admin]) -->|Create Task| TaskForm["POST /api/tasks"]
+    TaskForm -->|Link to Project & Employee| TaskDB[(MySQL Database)]
+
+    TaskDB -.->|Trigger Async Event| NotifyEmp[EmailService: New Task Assigned]
+
+    Emp([Assigned Employee]) -->|Access /tasks| MyTasks[My Tasks Workspace]
+    MyTasks -->|Update Status & Remarks| StatusChange["PATCH /api/tasks/{id}/status"]
+
+    StatusChange --> StateMachine{Task Status Transition}
+    StateMachine -->|PENDING| InProgress[IN_PROGRESS]
+    StateMachine -->|IN_PROGRESS| Completed[COMPLETED]
+
+    Completed -->|Persist Status & Remarks| DBUpdate[Save Task State]
+    DBUpdate -.->|Notify Admin| AdminMail[EmailService: Task Completed Alert]
+
+    DBUpdate -->|Trigger Recalculation| ProjRecalc[Project Progress Recalculation]
+    ProjRecalc -->|Completed / Total Ratio| ProjBar[Updated Project Progress %]
+```
+</details>
+
+---
+
+### 3.7 End-to-End API Request Lifecycle & Error Handling Flowchart
+*Figure 3.7: Generic REST API Request Execution Lifecycle, Exception Interception, & Async Email Dispatch.*
+
+<details>
+<summary>Click to view Mermaid Source Code</summary>
+
+```mermaid
+graph TD
+    Client([React Frontend Client]) -->|HTTP Request with Bearer Token| JwtFilter[JwtAuthFilter Interceptor]
+
+    JwtFilter -->|Token Valid| SecContext[Set Authentication in SecurityContext]
+    JwtFilter -->|Token Missing or Invalid| AuthError["401 Unauthorized Error"]
+
+    SecContext --> Controller[Spring Boot REST Controller]
+    Controller --> Validation{Input Validation & Regex Check}
+
+    Validation -->|Pass| Service[Service Layer Business Logic]
+    Validation -->|Fail| ExHandler
+
+    Service --> Repo[Spring Data JPA Repository]
+    Repo --> DB[(MySQL Database)]
+
+    Service -.->|Async Event @EnableAsync| EmailService[EmailService: HTML Email Dispatch]
+
+    Service -->|Exception Thrown| ExHandler["GlobalExceptionHandler (@ControllerAdvice)"]
+    ExHandler -->|Format Standard Error| ErrJson["JSON Error Response (status, message, timestamp)"]
+
+    DB -->|Return Entity / Data| Service
+    Service -->|Return DTO| Controller
+    Controller -->|200 OK Response| Client
 ```
 </details>
 
@@ -448,51 +610,56 @@ Interactive Swagger UI documentation is available when running the backend:
 
 ## 10. Application Screenshots
 
+### 10.1 Authentication & User Access
+![Login Portal](docs/screenshots/login-portal.png)
+*Figure 10.1: JWT Authentication & User Login Portal*
 
-### 10.1 Authentication & Login Interface
-![Login Page](docs/screenshots/login-page.png)
-*Figure 1: JWT Authentication & Registration Interface*
+![Sign Up Portal](docs/screenshots/signup-portal.png)
+*Figure 10.2: Account Registration Portal*
 
 ---
 
-### 10.2 System Admin Dashboard
+### 10.2 System Admin Portal & Management Interfaces
 ![Admin Dashboard](docs/screenshots/admin-dashboard.png)
-*Figure 2: Admin Dashboard with live KPIs, analytics charts, and test email alert action*
+*Figure 10.3: System Admin Dashboard with KPI Metrics, Analytics Charts, & Test Email Action*
+
+![Admin Employees View](docs/screenshots/adminview-employees.png)
+*Figure 10.4: Employee Management Interface with Pagination, Sorting, Search, & Approvals*
+
+![Admin Projects View](docs/screenshots/adminview-projects.png)
+*Figure 10.5: Project Lifecycle Management with Dynamic Task Progress & Team Assignment*
+
+![Admin Tasks View](docs/screenshots/adminview-tasks.png)
+*Figure 10.6: Task Tracking, Status Updates, & Filtering Interface*
+
+![Admin Reports View](docs/screenshots/adminview-reports.png)
+*Figure 10.7: Aggregated Operational Reports with Dual CSV & PDF Export Options*
+
+![Admin Profile View](docs/screenshots/adminview-profile.png)
+*Figure 10.8: Personal Profile Management & Employment Details Dashboard*
 
 ---
 
-### 10.3 Employee Dashboard & Task Tracking
-![Employee Dashboard](docs/screenshots/employee-dashboard.png)
-*Figure 3: Employee Workload Dashboard and task progress management*
+### 10.3 Employee Workspace
+![Employee Workload Dashboard](docs/screenshots/employee-overallview.png)
+*Figure 10.9: Employee Workload Dashboard, Completion Progress Ring, Task List, & Download Action*
 
 ---
 
-### 10.4 Reports & Analytics
-![Reports & Analytics](docs/screenshots/reports-analytics.png)
-*Figure 4.1: Detailed Project/Task reports with PDF export*
-
-### Analytics
-![Analytics](docs/screenshots/analytics.png)
-*Figure 4.2: Detailed Analytics*
-
-
----
-
-### 10.5 Sample PDF Report
+### 10.4 Data Export & Email Notifications
 ![Sample PDF Report](docs/screenshots/pdf-report-sample.png)
-*Figure 5: Auto-generated PDF report output*
+*Figure 10.10: Auto-Generated Formatted PDF Report Output*
 
----
-
-### 10.6 Email Notification Sample
 ![Email Notification Sample](docs/screenshots/email-notification.png)
-*Figure 6: Automated email notification sent on task assignment/status update*
+*Figure 10.11: Automated Asynchronous HTML Email Alert Dispatch*
 
 ---
 
-## 11. Author / Submission Info
+## 11. Submission & Author Info
 
-- **Repository**: [GitHub Repository](https://github.com/Badhrinadhgvs/Smart-Employee-Project-Management-System-Using-Spring-and-React)
-- **Submission Context**: Built for **EverNorth Technical Assessment (Round 2)**.
-- **Built By**: Gundlapalli Venkata Sai Badhrinadh
-- **Date**: July 2026.
+- **Project Repository**: [GitHub Repository](https://github.com/Badhrinadhgvs/Smart-Employee-Project-Management-System-Using-Spring-and-React)
+- **Submission Context**: Developed for **EverNorth Technical Assessment (Round 2)**.
+- **Author**: **Gundlapalli Venkata Sai Badhrinadh**
+- **Date**: July 2026
+- **License**: MIT License
+

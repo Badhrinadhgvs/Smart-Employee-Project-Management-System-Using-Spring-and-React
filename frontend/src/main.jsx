@@ -10,6 +10,8 @@ function Root() {
   return <ThemeProvider theme={getTheme(mode)}><CssBaseline /><App onToggleTheme={toggleTheme} mode={mode} /></ThemeProvider>;
 }
 
+console.log('Smart Employee & Project Management System loaded completely. Frontend URL: http://localhost:5173');
+
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <Root />
